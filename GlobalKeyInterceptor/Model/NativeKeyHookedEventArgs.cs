@@ -5,13 +5,13 @@ namespace GlobalKeyInterceptor.Model
 {
     internal class NativeKeyHookedEventArgs : HandledEventArgs
     {
-        public KeyState KeyboardState { get; private set; }
-        public LowLevelKeyboardInputEvent KeyboardData { get; private set; }
+        public KeyState KeyState { get; private set; }
+        public LowLevelKeyboardInputEvent KeyData { get; private set; }
 
-        public NativeKeyHookedEventArgs(LowLevelKeyboardInputEvent keyboardData, KeyState keyboardState)
+        public NativeKeyHookedEventArgs(LowLevelKeyboardInputEvent keyData, KeyState keyState)
         {
-            KeyboardData = keyboardData;
-            KeyboardState = keyboardState;
+            KeyData = keyData;
+            KeyState = keyState;
         }
     }
 }

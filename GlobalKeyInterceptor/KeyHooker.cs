@@ -21,10 +21,10 @@ namespace GlobalKeyInterceptor
 
         private void OnKeyPressed(object sender, NativeKeyHookedEventArgs e)
         {
-            if (e.KeyboardState != KeyState.KeyDown)
+            if (e.KeyState != KeyState.KeyDown && e.KeyState != KeyState.SysKeyDown)
                 return;
 
-            ConsoleKey key = (ConsoleKey)e.KeyboardData.VirtualCode;
+            ConsoleKey key = (ConsoleKey)e.KeyData.VirtualCode;
             KeyModifier ctrlModifier = KeyModifier.None;
             KeyModifier shiftModifier = KeyModifier.None;
             KeyModifier altModifier = KeyModifier.None;
@@ -37,7 +37,8 @@ namespace GlobalKeyInterceptor
                         NativeMethods.GetAsyncKeyState(KeyHookerNative.VkRightCtrl) > 1;
                     bool shiftPressed = NativeMethods.GetAsyncKeyState(KeyHookerNative.VkLeftShift) > 1 ||
                         NativeMethods.GetAsyncKeyState(KeyHookerNative.VkRightShift) > 1;
-                    bool altPressed = e.KeyboardState == KeyState.SysKeyDown && e.KeyboardData.Flags == KeyHookerNative.AltDown;
+                    bool altPressed = NativeMethods.GetAsyncKeyState(KeyHookerNative.VkLeftAlt) > 1 ||
+                        NativeMethods.GetAsyncKeyState(KeyHookerNative.VkRightAlt) > 1;
 
                     if (ctrlPressed) ctrlModifier = KeyModifier.Ctrl;
                     if (shiftPressed) shiftModifier = KeyModifier.Shift;

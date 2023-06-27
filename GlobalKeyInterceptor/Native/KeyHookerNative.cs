@@ -16,8 +16,8 @@ namespace GlobalKeyInterceptor.Native
         public const int VkRightShift = 0xA1;
         public const int VkLeftCtrl = 0xA2;
         public const int VkRightCtrl = 0xA3;
-        public const int VkAlt = 0x2000;
-        public const int AltDown = (VkAlt >> 8);
+        public const int VkLeftAlt = 0xA4;
+        public const int VkRightAlt = 0xA5;
 
         private IntPtr _windowsHookHandle;
         private IntPtr _user32LibraryHandle;
@@ -58,12 +58,9 @@ namespace GlobalKeyInterceptor.Native
                 if (marshaledStruct != null)
                 {
                     LowLevelKeyboardInputEvent p = (LowLevelKeyboardInputEvent)marshaledStruct;
-
                     var eventArguments = new NativeKeyHookedEventArgs(p, (KeyState)wparamTyped);
 
-                    EventHandler<NativeKeyHookedEventArgs> handler = KeyPressed;
-                    handler?.Invoke(this, eventArguments);
-
+                    KeyPressed?.Invoke(this, eventArguments);
                     fEatKeyStroke = eventArguments.Handled;
                 }
             }
