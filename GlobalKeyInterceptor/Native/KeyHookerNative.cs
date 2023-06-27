@@ -17,7 +17,7 @@ namespace GlobalKeyInterceptor.Native
         public const int VkLeftCtrl = 0xA2;
         public const int VkRightCtrl = 0xA3;
         public const int VkAlt = 0x2000;
-        public const int LlkhfAltdown = (VkAlt >> 8);
+        public const int AltDown = (VkAlt >> 8);
 
         private IntPtr _windowsHookHandle;
         private IntPtr _user32LibraryHandle;

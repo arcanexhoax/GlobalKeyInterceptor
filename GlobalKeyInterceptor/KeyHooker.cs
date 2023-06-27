@@ -25,6 +25,9 @@ namespace GlobalKeyInterceptor
                 return;
 
             ConsoleKey key = (ConsoleKey)e.KeyboardData.VirtualCode;
+            KeyModifier ctrlModifier = KeyModifier.None;
+            KeyModifier shiftModifier = KeyModifier.None;
+            KeyModifier altModifier = KeyModifier.None;
 
             foreach (var hook in _hookingKeys)
             {
@@ -34,8 +37,13 @@ namespace GlobalKeyInterceptor
                         NativeMethods.GetAsyncKeyState(KeyHookerNative.VkRightCtrl) > 1;
                     bool shiftPressed = NativeMethods.GetAsyncKeyState(KeyHookerNative.VkLeftShift) > 1 ||
                         NativeMethods.GetAsyncKeyState(KeyHookerNative.VkRightShift) > 1;
+                    bool altPressed = e.KeyboardState == KeyState.SysKeyDown && e.KeyboardData.Flags == KeyHookerNative.AltDown;
 
-                    KeyHooked?.Invoke(this, new KeyHookedEventArgs(key, (ctrlPressed ? KeyModifier.Ctrl : KeyModifier.None) | (shiftPressed ? KeyModifier.Shift : KeyModifier.None)));
+                    if (ctrlPressed) ctrlModifier = KeyModifier.Ctrl;
+                    if (shiftPressed) shiftModifier = KeyModifier.Shift;
+                    if (altPressed) altModifier = KeyModifier.Alt;
+
+                    KeyHooked?.Invoke(this, new KeyHookedEventArgs(key, ctrlModifier | shiftModifier | altModifier));
                     //e.Handled = true;
                     break;
                 }
