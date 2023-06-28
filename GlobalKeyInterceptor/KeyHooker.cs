@@ -57,7 +57,7 @@ namespace GlobalKeyInterceptor
             KeyModifier altModifier = KeyModifier.None;
 
             bool ctrlPressed = NativeMethods.GetAsyncKeyState(KeyHookerNative.VkLeftCtrl) > 1 ||
-                        NativeMethods.GetAsyncKeyState(KeyHookerNative.VkRightCtrl) > 1;
+                NativeMethods.GetAsyncKeyState(KeyHookerNative.VkRightCtrl) > 1;
             bool shiftPressed = NativeMethods.GetAsyncKeyState(KeyHookerNative.VkLeftShift) > 1 ||
                 NativeMethods.GetAsyncKeyState(KeyHookerNative.VkRightShift) > 1;
             bool altPressed = NativeMethods.GetAsyncKeyState(KeyHookerNative.VkLeftAlt) > 1 ||
@@ -73,7 +73,13 @@ namespace GlobalKeyInterceptor
 
         public void Dispose()
         {
-            _hooker?.Dispose();
+            if (_hooker != null)
+            {
+                _hooker.KeyPressed -= OnKeyPressed;
+                _hooker.Dispose();
+            }
         }
+
+        ~KeyHooker() => Dispose();
     }
 }
