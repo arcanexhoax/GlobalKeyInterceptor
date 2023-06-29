@@ -1,5 +1,4 @@
 ﻿using GlobalKeyInterceptor.Enum;
-using System;
 using System.Text;
 
 namespace GlobalKeyInterceptor.Model
@@ -12,7 +11,7 @@ namespace GlobalKeyInterceptor.Model
         /// <remarks>
         /// To get VK code of the key use <see cref="int"/> casting.
         /// </remarks>
-        public ConsoleKey Key { get; }
+        public Key Key { get; }
 
         /// <summary>
         /// A modifier of the intercepted shortcut.
@@ -31,7 +30,7 @@ namespace GlobalKeyInterceptor.Model
         /// <param name="key">Intercepted key.</param>
         /// <param name="modifier">A modifier of the intercepted shortcut. Use "|" to set multiple modifiers.</param>
         /// <param name="name">A name of the shortcut.</param>
-        public Shortcut(ConsoleKey key, KeyModifier modifier = KeyModifier.None, string name = null)
+        public Shortcut(Key key, KeyModifier modifier = KeyModifier.None, string name = null)
         {
             Key = key;
             Modifier = modifier;

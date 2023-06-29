@@ -38,7 +38,7 @@ namespace GlobalKeyInterceptor
             if (e.KeyState != KeyState.KeyDown && e.KeyState != KeyState.SysKeyDown)
                 return;
 
-            ConsoleKey key = (ConsoleKey)e.KeyData.VirtualCode;
+            Key key = (Key)e.KeyData.VirtualCode;
             Shortcut shortcut = null;
 
             bool ctrlPressed = NativeMethods.GetAsyncKeyState(KeyHookerNative.VkLeftCtrl) > 1 ||
