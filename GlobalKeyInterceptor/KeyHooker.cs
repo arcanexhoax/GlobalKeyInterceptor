@@ -36,7 +36,7 @@ namespace GlobalKeyInterceptor
             
             if (_hookingKeys.Length == 0)
             {
-                InvokeKeyHooked(key);
+                e.Handled = InvokeKeyHooked(key);
                 return;
             }
 
@@ -44,13 +44,13 @@ namespace GlobalKeyInterceptor
             {
                 if (hook == key)
                 {
-                    InvokeKeyHooked(hook);
+                    e.Handled = InvokeKeyHooked(hook);
                     break;
                 }
             }
         }
 
-        private void InvokeKeyHooked(ConsoleKey key)
+        private bool InvokeKeyHooked(ConsoleKey key)
         {
             KeyModifier ctrlModifier = KeyModifier.None;
             KeyModifier shiftModifier = KeyModifier.None;
@@ -67,8 +67,9 @@ namespace GlobalKeyInterceptor
             if (shiftPressed) shiftModifier = KeyModifier.Shift;
             if (altPressed) altModifier = KeyModifier.Alt;
 
-            KeyHooked?.Invoke(this, new KeyHookedEventArgs(key, ctrlModifier | shiftModifier | altModifier));
-            //e.Handled = true;
+            var keyHookedEventArgs = new KeyHookedEventArgs(key, ctrlModifier | shiftModifier | altModifier);
+            KeyHooked?.Invoke(this, keyHookedEventArgs);
+            return keyHookedEventArgs.IsHandled;
         }
 
         public void Dispose()
