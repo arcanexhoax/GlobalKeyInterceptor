@@ -18,6 +18,8 @@ namespace GlobalKeyInterceptor.Native
         public const int VkRightCtrl = 0xA3;
         public const int VkLeftAlt = 0xA4;
         public const int VkRightAlt = 0xA5;
+        public const int VkLeftWin = 0x5B;
+        public const int VkRightWin = 0x5C;
 
         private IntPtr _windowsHookHandle;
         private IntPtr _user32LibraryHandle;

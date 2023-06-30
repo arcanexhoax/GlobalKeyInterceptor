@@ -9,5 +9,7 @@ namespace GlobalKeyInterceptor.Util
         public static bool IsShift(Key key) => key == Key.Shift || key == Key.LeftShift || key == Key.RightShift;
 
         public static bool IsAlt(Key key) => key == Key.Alt || key == Key.LeftAlt || key == Key.RightAlt;
+
+        public static bool IsWin(Key key) => key == Key.LeftWindows || key == Key.RightWindows;
     }
 }

@@ -28,7 +28,7 @@ namespace GlobalKeyInterceptor.Model
         /// </summary>
         public string Name { get; }
 
-        /// <param name="key">Intercepted key. If the key specified as Ctrl/Shift/Alt, then the corresponding modifier will be ignored.</param>
+        /// <param name="key">Intercepted key. If the key specified as Ctrl/Shift/Alt/Win, then the corresponding modifier will be ignored.</param>
         /// <param name="modifier">A modifier of the intercepted shortcut. Use "|" to set multiple modifiers.</param>
         /// <param name="name">A name of the shortcut.</param>
         public Shortcut(Key key, KeyModifier modifier = KeyModifier.None, string name = null)
@@ -39,6 +39,8 @@ namespace GlobalKeyInterceptor.Model
                 modifier -= KeyModifier.Shift;
             if (KeyUtil.IsAlt(key) && modifier.HasFlag(KeyModifier.Alt))
                 modifier -= KeyModifier.Alt;
+            if (KeyUtil.IsWin(key) && modifier.HasFlag(KeyModifier.Win))
+                modifier -= KeyModifier.Win;
 
             Key = key;
             Modifier = modifier;
@@ -47,17 +49,20 @@ namespace GlobalKeyInterceptor.Model
 
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder(string.IsNullOrEmpty(Name) ? "(" : Name + " (");
+            StringBuilder modifiersBuilder = new StringBuilder();
 
             if (Modifier.HasFlag(KeyModifier.Ctrl))
-                sb.Append("Ctrl + ");
+                modifiersBuilder.Append("Ctrl + ");
             if (Modifier.HasFlag(KeyModifier.Shift))
-                sb.Append("Shift + ");
+                modifiersBuilder.Append("Shift + ");
             if (Modifier.HasFlag(KeyModifier.Alt))
-                sb.Append("Alt + ");
+                modifiersBuilder.Append("Alt + ");
+            if (Modifier.HasFlag(KeyModifier.Win))
+                modifiersBuilder.Append("Win + ");
 
-            sb.Append(Key.ToString() + ")");
-            return sb.ToString();
+            modifiersBuilder.Append(Key.ToString());
+
+            return string.IsNullOrEmpty(Name) ? modifiersBuilder.ToString() : $"{Name} ({modifiersBuilder})";
         }
     }
 }
