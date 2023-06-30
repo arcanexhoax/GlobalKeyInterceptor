@@ -1,4 +1,5 @@
 ﻿using GlobalKeyInterceptor.Enum;
+using GlobalKeyInterceptor.Util;
 using System.Text;
 
 namespace GlobalKeyInterceptor.Model
@@ -27,11 +28,18 @@ namespace GlobalKeyInterceptor.Model
         /// </summary>
         public string Name { get; }
 
-        /// <param name="key">Intercepted key.</param>
+        /// <param name="key">Intercepted key. If the key specified as Ctrl/Shift/Alt, then the corresponding modifier will be ignored.</param>
         /// <param name="modifier">A modifier of the intercepted shortcut. Use "|" to set multiple modifiers.</param>
         /// <param name="name">A name of the shortcut.</param>
         public Shortcut(Key key, KeyModifier modifier = KeyModifier.None, string name = null)
         {
+            if (KeyUtil.IsCtrl(key) && modifier.HasFlag(KeyModifier.Ctrl))
+                modifier -= KeyModifier.Ctrl;
+            if (KeyUtil.IsShift(key) && modifier.HasFlag(KeyModifier.Shift))
+                modifier -= KeyModifier.Shift;
+            if (KeyUtil.IsAlt(key) && modifier.HasFlag(KeyModifier.Alt))
+                modifier -= KeyModifier.Alt;
+
             Key = key;
             Modifier = modifier;
             Name = name;

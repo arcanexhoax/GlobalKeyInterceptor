@@ -1,6 +1,7 @@
 ﻿using GlobalKeyInterceptor.Enum;
 using GlobalKeyInterceptor.Model;
 using GlobalKeyInterceptor.Native;
+using GlobalKeyInterceptor.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,39 +39,43 @@ namespace GlobalKeyInterceptor
             if (e.KeyState != KeyState.KeyDown && e.KeyState != KeyState.SysKeyDown)
                 return;
 
-            Key key = (Key)e.KeyData.VirtualCode;
+            Key pressedKey = (Key)e.KeyData.VirtualCode;
             Shortcut shortcut = null;
 
-            bool ctrlPressed = NativeMethods.GetAsyncKeyState(KeyHookerNative.VkLeftCtrl) > 1 ||
-                NativeMethods.GetAsyncKeyState(KeyHookerNative.VkRightCtrl) > 1;
-            bool shiftPressed = NativeMethods.GetAsyncKeyState(KeyHookerNative.VkLeftShift) > 1 ||
-                NativeMethods.GetAsyncKeyState(KeyHookerNative.VkRightShift) > 1;
-            bool altPressed = NativeMethods.GetAsyncKeyState(KeyHookerNative.VkLeftAlt) > 1 ||
-                NativeMethods.GetAsyncKeyState(KeyHookerNative.VkRightAlt) > 1;
+            // If modifier specified as key, then we ignore it as modifier
+            bool ctrlModifierPressed = !KeyUtil.IsCtrl(pressedKey) && (NativeMethods.GetAsyncKeyState(KeyHookerNative.VkLeftCtrl) > 1 ||
+                NativeMethods.GetAsyncKeyState(KeyHookerNative.VkRightCtrl) > 1);
+            bool shiftModifierPressed = !KeyUtil.IsShift(pressedKey) && (NativeMethods.GetAsyncKeyState(KeyHookerNative.VkLeftShift) > 1 ||
+                NativeMethods.GetAsyncKeyState(KeyHookerNative.VkRightShift) > 1);
+            bool altModifierPressed = !KeyUtil.IsAlt(pressedKey) && (NativeMethods.GetAsyncKeyState(KeyHookerNative.VkLeftAlt) > 1 || 
+                NativeMethods.GetAsyncKeyState(KeyHookerNative.VkRightAlt) > 1);
 
             if (!_hookingShortcuts.Any())
             {
-                KeyModifier ctrlModifier = ctrlPressed ? KeyModifier.Ctrl : KeyModifier.None;
-                KeyModifier shiftModifier = shiftPressed ? KeyModifier.Shift : KeyModifier.None;
-                KeyModifier altModifier = altPressed ? KeyModifier.Alt : KeyModifier.None;
+                KeyModifier ctrlModifier = ctrlModifierPressed ? KeyModifier.Ctrl : KeyModifier.None;
+                KeyModifier shiftModifier = shiftModifierPressed ? KeyModifier.Shift : KeyModifier.None;
+                KeyModifier altModifier = altModifierPressed ? KeyModifier.Alt : KeyModifier.None;
 
-                shortcut = new Shortcut(key, ctrlModifier | shiftModifier | altModifier);
+                shortcut = new Shortcut(pressedKey, ctrlModifier | shiftModifier | altModifier);
             }
             else
             {
                 foreach (var sc in _hookingShortcuts)
                 {
-                    if (sc.Key != key)
-                        continue;
-
-                    bool isCtrlHooking = sc.Modifier.HasFlag(KeyModifier.Ctrl);
-                    bool isShiftHooking = sc.Modifier.HasFlag(KeyModifier.Shift);
-                    bool isAltHooking = sc.Modifier.HasFlag(KeyModifier.Alt);
-
-                    if (isCtrlHooking == ctrlPressed && isShiftHooking == shiftPressed && isAltHooking == altPressed)
+                    if ((sc.Key == Key.Ctrl && (pressedKey == Key.LeftCtrl || pressedKey == Key.RightCtrl)) ||
+                        (sc.Key == Key.Shift && (pressedKey == Key.LeftShift || pressedKey == Key.RightShift)) ||
+                        (sc.Key == Key.Alt && (pressedKey == Key.LeftAlt || pressedKey == Key.RightAlt)) ||
+                        sc.Key == pressedKey)
                     {
-                        shortcut = sc;
-                        break;
+                        bool isCtrlHooking = sc.Modifier.HasFlag(KeyModifier.Ctrl);
+                        bool isShiftHooking = sc.Modifier.HasFlag(KeyModifier.Shift);
+                        bool isAltHooking = sc.Modifier.HasFlag(KeyModifier.Alt);
+
+                        if (isCtrlHooking == ctrlModifierPressed && isShiftHooking == shiftModifierPressed && isAltHooking == altModifierPressed)
+                        {
+                            shortcut = sc;
+                            break;
+                        }
                     }
                 }
             }
