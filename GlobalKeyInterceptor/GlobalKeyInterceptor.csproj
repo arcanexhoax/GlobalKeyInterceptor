@@ -1,7 +1,32 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Authors>arcanexhoax</Authors>
+		<Description>A library that allows you to intercept keystrokes or shortcuts in the system</Description>
+		<Version>0.9.0</Version>
+		<Product>GlobalKeyInterceptor</Product>
+		<Title>GlobalKeyInterceptor</Title>
+		<PackageTags>hotkey;shortcut;interception;keystoke;key interceptor</PackageTags>
+		<PackageVersion>0.9.0</PackageVersion>
+		<PackageId>ArcaneHoax.GlobalKeyInterceptor</PackageId>
+		<!--<PackageProjectUrl>https://github.com/arcanexhoax/GlobalKeyInterceptor</PackageProjectUrl>-->
+		<RepositoryUrl>https://github.com/arcanexhoax/GlobalKeyInterceptor</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<!--<PackageIcon>path</PackageIcon>-->
+		<!--<PackageReadmeFile>README.md</PackageReadmeFile>-->
+	</PropertyGroup>
+
+	<!--<ItemGroup>
+	  <None Include="path">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	  <None Include="..\..\README.md">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	</ItemGroup>-->
 
 </Project>
