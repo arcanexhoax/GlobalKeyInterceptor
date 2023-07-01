@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GlobalKeyInterceptor.Enum
+namespace GlobalKeyInterceptor
 {
     [Flags]
     public enum KeyModifier

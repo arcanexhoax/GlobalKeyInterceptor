@@ -8,30 +8,30 @@ using System.Linq;
 
 namespace GlobalKeyInterceptor
 {
-    public class KeyHooker : IDisposable
+    public class KeyInterceptor : IDisposable
     {
-        private readonly KeyHookerNative _hooker;
-        private readonly IEnumerable<Shortcut> _hookingShortcuts;
+        private readonly NativeKeyInterceptor _interceptor;
+        private readonly IEnumerable<Shortcut> _interceptingShortcuts;
 
         /// <summary>
         /// An event that invokes when any of the specified keys was pressed.
         /// </summary>
-        public event EventHandler<KeyHookedEventArgs> KeyHooked;
+        public event EventHandler<ShortcutInterceptedEventArgs> ShortcutIntercepted;
 
         /// <summary>
-        /// A class that intercept specified keys. To receive intercepted keys, use <see cref="KeyHooked"/> event.
+        /// A class that intercept specified keys. To receive intercepted keys, use <see cref="ShortcutIntercepted"/> event.
         /// </summary>
-        public KeyHooker() : this(Enumerable.Empty<Shortcut>()) { }
+        public KeyInterceptor() : this(Enumerable.Empty<Shortcut>()) { }
 
         /// <summary>
-        /// A class that intercept specified keys. To receive intercepted keys, use <see cref="KeyHooked"/> event.
+        /// A class that intercept specified keys. To receive intercepted keys, use <see cref="ShortcutIntercepted"/> event.
         /// </summary>
-        /// <param name="hookingShortcuts">A list of keys that will be intercepted. If parameter is empty, every key will be intercepted.</param>
-        public KeyHooker(IEnumerable<Shortcut> hookingShortcuts)
+        /// <param name="interceptingingShortcuts">A list of keys that will be intercepted. If parameter is empty, every key will be intercepted.</param>
+        public KeyInterceptor(IEnumerable<Shortcut> interceptingingShortcuts)
         {
-            _hooker = new KeyHookerNative();
-            _hooker.KeyPressed += OnKeyPressed;
-            _hookingShortcuts = hookingShortcuts ?? Enumerable.Empty<Shortcut>();
+            _interceptor = new NativeKeyInterceptor();
+            _interceptor.KeyPressed += OnKeyPressed;
+            _interceptingShortcuts = interceptingingShortcuts ?? Enumerable.Empty<Shortcut>();
         }
 
         private void OnKeyPressed(object sender, NativeKeyHookedEventArgs e)
@@ -43,16 +43,12 @@ namespace GlobalKeyInterceptor
             Shortcut shortcut = null;
 
             // If a modifier specified as a key, then we ignore it as a modifier
-            bool ctrlModifierPressed = !KeyUtil.IsCtrl(pressedKey) && (NativeMethods.GetAsyncKeyState(KeyHookerNative.VkLeftCtrl) > 1 ||
-                NativeMethods.GetAsyncKeyState(KeyHookerNative.VkRightCtrl) > 1);
-            bool shiftModifierPressed = !KeyUtil.IsShift(pressedKey) && (NativeMethods.GetAsyncKeyState(KeyHookerNative.VkLeftShift) > 1 ||
-                NativeMethods.GetAsyncKeyState(KeyHookerNative.VkRightShift) > 1);
-            bool altModifierPressed = !KeyUtil.IsAlt(pressedKey) && (NativeMethods.GetAsyncKeyState(KeyHookerNative.VkLeftAlt) > 1 || 
-                NativeMethods.GetAsyncKeyState(KeyHookerNative.VkRightAlt) > 1);
-            bool winModifierPressed = !KeyUtil.IsWin(pressedKey) && (NativeMethods.GetAsyncKeyState(KeyHookerNative.VkLeftWin) > 1 ||
-                NativeMethods.GetAsyncKeyState(KeyHookerNative.VkRightWin) > 1);
+            bool ctrlModifierPressed = !KeyUtil.IsKeyCtrl(pressedKey) && KeyUtil.IsCtrlPressed();
+            bool shiftModifierPressed = !KeyUtil.IsKeyShift(pressedKey) && KeyUtil.IsShiftPressed();
+            bool altModifierPressed = !KeyUtil.IsKeyAlt(pressedKey) && KeyUtil.IsAltPressed();
+            bool winModifierPressed = !KeyUtil.IsKeyWin(pressedKey) && KeyUtil.IsWinPressed();
 
-            if (!_hookingShortcuts.Any())
+            if (!_interceptingShortcuts.Any())
             {
                 KeyModifier ctrlModifier = ctrlModifierPressed ? KeyModifier.Ctrl : KeyModifier.None;
                 KeyModifier shiftModifier = shiftModifierPressed ? KeyModifier.Shift : KeyModifier.None;
@@ -63,7 +59,7 @@ namespace GlobalKeyInterceptor
             }
             else
             {
-                foreach (var sc in _hookingShortcuts)
+                foreach (var sc in _interceptingShortcuts)
                 {
                     if ((sc.Key == Key.Ctrl && (pressedKey == Key.LeftCtrl || pressedKey == Key.RightCtrl)) ||
                         (sc.Key == Key.Shift && (pressedKey == Key.LeftShift || pressedKey == Key.RightShift)) ||
@@ -87,21 +83,21 @@ namespace GlobalKeyInterceptor
 
             if (shortcut != null)
             {
-                var keyHookedEventArgs = new KeyHookedEventArgs(shortcut);
-                KeyHooked?.Invoke(this, keyHookedEventArgs);
+                var keyHookedEventArgs = new ShortcutInterceptedEventArgs(shortcut);
+                ShortcutIntercepted?.Invoke(this, keyHookedEventArgs);
                 e.Handled = keyHookedEventArgs.IsHandled;
             }
         }
 
         public void Dispose()
         {
-            if (_hooker != null)
+            if (_interceptor != null)
             {
-                _hooker.KeyPressed -= OnKeyPressed;
-                _hooker.Dispose();
+                _interceptor.KeyPressed -= OnKeyPressed;
+                _interceptor.Dispose();
             }
         }
 
-        ~KeyHooker() => Dispose();
+        ~KeyInterceptor() => Dispose();
     }
 }

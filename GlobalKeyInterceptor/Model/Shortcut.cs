@@ -1,8 +1,7 @@
-﻿using GlobalKeyInterceptor.Enum;
-using GlobalKeyInterceptor.Util;
+﻿using GlobalKeyInterceptor.Util;
 using System.Text;
 
-namespace GlobalKeyInterceptor.Model
+namespace GlobalKeyInterceptor
 {
     public class Shortcut
     {
@@ -29,17 +28,28 @@ namespace GlobalKeyInterceptor.Model
         public string Name { get; }
 
         /// <param name="key">Intercepted key. If the key specified as Ctrl/Shift/Alt/Win, then the corresponding modifier will be ignored.</param>
+        public Shortcut(Key key) : this(key, KeyModifier.None) { }
+
+        /// <param name="key">Intercepted key. If the key specified as Ctrl/Shift/Alt/Win, then the corresponding modifier will be ignored.</param>
+        /// <param name="name">A name of the shortcut.</param>
+        public Shortcut(Key key, string name) : this(key, KeyModifier.None, name) { }
+
+        /// <param name="key">Intercepted key. If the key specified as Ctrl/Shift/Alt/Win, then the corresponding modifier will be ignored.</param>
+        /// <param name="modifier">A modifier of the intercepted shortcut. Use "|" to set multiple modifiers.</param>
+        public Shortcut(Key key, KeyModifier modifier) : this(key, modifier, null) { }
+
+        /// <param name="key">Intercepted key. If the key specified as Ctrl/Shift/Alt/Win, then the corresponding modifier will be ignored.</param>
         /// <param name="modifier">A modifier of the intercepted shortcut. Use "|" to set multiple modifiers.</param>
         /// <param name="name">A name of the shortcut.</param>
-        public Shortcut(Key key, KeyModifier modifier = KeyModifier.None, string name = null)
+        public Shortcut(Key key, KeyModifier modifier, string name)
         {
-            if (KeyUtil.IsCtrl(key) && modifier.HasFlag(KeyModifier.Ctrl))
+            if (KeyUtil.IsKeyCtrl(key) && modifier.HasFlag(KeyModifier.Ctrl))
                 modifier -= KeyModifier.Ctrl;
-            if (KeyUtil.IsShift(key) && modifier.HasFlag(KeyModifier.Shift))
+            if (KeyUtil.IsKeyShift(key) && modifier.HasFlag(KeyModifier.Shift))
                 modifier -= KeyModifier.Shift;
-            if (KeyUtil.IsAlt(key) && modifier.HasFlag(KeyModifier.Alt))
+            if (KeyUtil.IsKeyAlt(key) && modifier.HasFlag(KeyModifier.Alt))
                 modifier -= KeyModifier.Alt;
-            if (KeyUtil.IsWin(key) && modifier.HasFlag(KeyModifier.Win))
+            if (KeyUtil.IsKeyWin(key) && modifier.HasFlag(KeyModifier.Win))
                 modifier -= KeyModifier.Win;
 
             Key = key;

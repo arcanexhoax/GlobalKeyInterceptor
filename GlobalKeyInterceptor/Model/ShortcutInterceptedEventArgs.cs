@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace GlobalKeyInterceptor.Model
+namespace GlobalKeyInterceptor
 {
-    public class KeyHookedEventArgs : EventArgs
+    public class ShortcutInterceptedEventArgs : EventArgs
     {
         /// <summary>
         /// An intercepted shortcut.
@@ -17,7 +17,7 @@ namespace GlobalKeyInterceptor.Model
         /// </remarks>
         public bool IsHandled { get; set; }
 
-        public KeyHookedEventArgs(Shortcut shortcut)
+        public ShortcutInterceptedEventArgs(Shortcut shortcut)
         {
             Shortcut = shortcut;
         }

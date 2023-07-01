@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
@@ -10,7 +10,7 @@
 		<Title>GlobalKeyInterceptor</Title>
 		<PackageTags>hotkey;shortcut;interception;keystoke;key interceptor</PackageTags>
 		<PackageVersion>0.9.0</PackageVersion>
-		<PackageId>ArcaneHoax.GlobalKeyInterceptor</PackageId>
+		<PackageId>GlobalKeyInterceptor</PackageId>
 		<!--<PackageProjectUrl>https://github.com/arcanexhoax/GlobalKeyInterceptor</PackageProjectUrl>-->
 		<RepositoryUrl>https://github.com/arcanexhoax/GlobalKeyInterceptor</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>

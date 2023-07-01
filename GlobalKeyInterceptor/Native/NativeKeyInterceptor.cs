@@ -9,7 +9,7 @@ namespace GlobalKeyInterceptor.Native
 {
     internal delegate IntPtr HookProc(int nCode, IntPtr wParam, IntPtr lParam);
 
-    internal class KeyHookerNative : IDisposable
+    internal class NativeKeyInterceptor : IDisposable
     {
         public const int WH_KEYBOARD_LL = 13;
         public const int VkLeftShift = 0xA0;
@@ -27,7 +27,7 @@ namespace GlobalKeyInterceptor.Native
 
         public event EventHandler<NativeKeyHookedEventArgs> KeyPressed;
 
-        public KeyHookerNative()
+        public NativeKeyInterceptor()
         {
             _windowsHookHandle = IntPtr.Zero;
             _user32LibraryHandle = IntPtr.Zero;
@@ -107,7 +107,7 @@ namespace GlobalKeyInterceptor.Native
             GC.SuppressFinalize(this);
         }
 
-        ~KeyHookerNative()
+        ~NativeKeyInterceptor()
         {
             Dispose(false);
         }
