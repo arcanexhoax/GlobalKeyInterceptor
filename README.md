@@ -1,12 +1,12 @@
 ## GlobalKeyInterceptor
-It's a simple to use library that allows you to intercept keystrokes or shortcuts in the system
+It's a simple to use library that allows you to intercept keystrokes or shortcuts in the system.
 
 ## Features 
 - Intercept specified keys and shortcuts or intercept every keystroke
 - Possibility to "eat" pressed key
 
 ## Warning
-Currently it only works in WinForms/WPF applications, because Console applications don't have a message loop. This problem will be solved.
+Currently it only works in WinForms/WPF applications, because Console applications don't have the message loop.
 
 ## Example
 ```cs
@@ -37,7 +37,7 @@ namespace InterceptorExample
             {
                 case "R":
                     Console.WriteLine("The 'R' key is pressed");
-                    // Set IsHandled to true if you want to the "eat" pressed key
+                    // Set IsHandled to true if you want to "eat" the pressed key
                     e.IsHandled = true;
                     break;
                 case "Shift + Alt + D":
