@@ -16,22 +16,22 @@ namespace GlobalKeyInterceptor
         /// <summary>
         /// An event that invokes when any of the specified keys was pressed.
         /// </summary>
-        public event EventHandler<ShortcutInterceptedEventArgs> ShortcutIntercepted;
+        public event EventHandler<ShortcutPressedEventArgs> ShortcutPressed;
 
         /// <summary>
-        /// A class that intercept specified keys. To receive intercepted keys, use <see cref="ShortcutIntercepted"/> event.
+        /// A class that intercept specified keys. To receive intercepted keys, use <see cref="ShortcutPressed"/> event.
         /// </summary>
         public KeyInterceptor() : this(Enumerable.Empty<Shortcut>()) { }
 
         /// <summary>
-        /// A class that intercept specified keys. To receive intercepted keys, use <see cref="ShortcutIntercepted"/> event.
+        /// A class that intercept specified keys. To receive intercepted keys, use <see cref="ShortcutPressed"/> event.
         /// </summary>
-        /// <param name="interceptingingShortcuts">A list of keys that will be intercepted. If parameter is empty, every key will be intercepted.</param>
-        public KeyInterceptor(IEnumerable<Shortcut> interceptingingShortcuts)
+        /// <param name="interceptingShortcuts">A list of keys that will be intercepted. If parameter is empty, every key will be intercepted.</param>
+        public KeyInterceptor(IEnumerable<Shortcut> interceptingShortcuts)
         {
             _interceptor = new NativeKeyInterceptor();
             _interceptor.KeyPressed += OnKeyPressed;
-            _interceptingShortcuts = interceptingingShortcuts ?? Enumerable.Empty<Shortcut>();
+            _interceptingShortcuts = interceptingShortcuts ?? Enumerable.Empty<Shortcut>();
         }
 
         private void OnKeyPressed(object sender, NativeKeyHookedEventArgs e)
@@ -83,8 +83,8 @@ namespace GlobalKeyInterceptor
 
             if (shortcut != null)
             {
-                var keyHookedEventArgs = new ShortcutInterceptedEventArgs(shortcut);
-                ShortcutIntercepted?.Invoke(this, keyHookedEventArgs);
+                var keyHookedEventArgs = new ShortcutPressedEventArgs(shortcut);
+                ShortcutPressed?.Invoke(this, keyHookedEventArgs);
                 e.Handled = keyHookedEventArgs.IsHandled;
             }
         }

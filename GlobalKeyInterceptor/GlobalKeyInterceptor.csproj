@@ -4,7 +4,7 @@
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Authors>arcanexhoax</Authors>
-		<Description>A library that allows you to intercept keystrokes or shortcuts in the system</Description>
+		<Description>A simple to use library that allows you to intercept keystrokes or shortcuts in the system.</Description>
 		<Version>0.9.0</Version>
 		<Product>GlobalKeyInterceptor</Product>
 		<Title>GlobalKeyInterceptor</Title>

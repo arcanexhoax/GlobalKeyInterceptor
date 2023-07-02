@@ -2,7 +2,7 @@
 
 namespace GlobalKeyInterceptor
 {
-    public class ShortcutInterceptedEventArgs : EventArgs
+    public class ShortcutPressedEventArgs : EventArgs
     {
         /// <summary>
         /// An intercepted shortcut.
@@ -17,7 +17,7 @@ namespace GlobalKeyInterceptor
         /// </remarks>
         public bool IsHandled { get; set; }
 
-        public ShortcutInterceptedEventArgs(Shortcut shortcut)
+        public ShortcutPressedEventArgs(Shortcut shortcut)
         {
             Shortcut = shortcut;
         }
