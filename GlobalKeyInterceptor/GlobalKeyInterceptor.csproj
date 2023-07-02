@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Authors>arcanexhoax</Authors>
+		<Authors>Vitalii Shchur</Authors>
 		<Description>A simple to use library that allows you to intercept keystrokes or shortcuts in the system.</Description>
 		<Version>0.9.0</Version>
 		<Product>GlobalKeyInterceptor</Product>
@@ -11,22 +11,22 @@
 		<PackageTags>hotkey;shortcut;interception;keystoke;key interceptor</PackageTags>
 		<PackageVersion>0.9.0</PackageVersion>
 		<PackageId>GlobalKeyInterceptor</PackageId>
-		<!--<PackageProjectUrl>https://github.com/arcanexhoax/GlobalKeyInterceptor</PackageProjectUrl>-->
 		<RepositoryUrl>https://github.com/arcanexhoax/GlobalKeyInterceptor</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<!--<PackageIcon>path</PackageIcon>-->
-		<!--<PackageReadmeFile>README.md</PackageReadmeFile>-->
+		<Copyright>Vitalii Shchur (c) 2023</Copyright>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
 
-	<!--<ItemGroup>
-	  <None Include="path">
+	<ItemGroup>
+	  <None Include="..\LICENSE">
 	    <Pack>True</Pack>
 	    <PackagePath>\</PackagePath>
 	  </None>
-	  <None Include="..\..\README.md">
+	  <None Include="..\README.md">
 	    <Pack>True</Pack>
 	    <PackagePath>\</PackagePath>
 	  </None>
-	</ItemGroup>-->
-
+	</ItemGroup>
 </Project>
