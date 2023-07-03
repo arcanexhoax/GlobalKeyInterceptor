@@ -4,16 +4,17 @@
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Authors>Vitalii Shchur</Authors>
-		<Description>A simple to use library that allows you to intercept keystrokes or shortcuts in the system.</Description>
-		<Version>0.9.0</Version>
+		<Description>A simple to use library that allows you to intercept keystrokes or shortcuts in the system. You can find an example of the library in the readme or on the repository page.</Description>
+		<Version>0.9.1</Version>
 		<Product>GlobalKeyInterceptor</Product>
 		<Title>GlobalKeyInterceptor</Title>
-		<PackageTags>hotkey;shortcut;interception;keystoke;key interceptor</PackageTags>
+		<PackageTags>hotkey;shortcut;key;keystroke;interception;interceptor;hook;hooker;listen;listener;check;checker</PackageTags>
 		<PackageVersion>0.9.0</PackageVersion>
 		<PackageId>GlobalKeyInterceptor</PackageId>
+		<PackageProjectUrl>https://github.com/arcanexhoax/GlobalKeyInterceptor</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/arcanexhoax/GlobalKeyInterceptor</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<Copyright>Vitalii Shchur (c) 2023</Copyright>
+		<Copyright>Copyright (c) Vitalii Shchur 2023</Copyright>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
