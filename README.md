@@ -11,11 +11,13 @@ Currently it only works in WinForms/WPF applications, because Console applicatio
 ## Example
 ```cs
 using GlobalKeyInterceptor;
+
 namespace InterceptorExample
 {
     internal class Program
     {
         private readonly KeyInterceptor _interceptor;
+
         public Program()
         {
             // Creating an array of shortcuts that you want to intercept
@@ -44,6 +46,12 @@ namespace InterceptorExample
                     Console.WriteLine("The 'Shift + Alt + D' shortcut is pressed");
                     break;
             }
+        }
+
+        public void Dispose()
+        {
+            _interceptor.ShortcutPressed -= OnShortcutPressed;
+            _interceptor.Dispose;
         }
     }
 }
