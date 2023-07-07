@@ -12,7 +12,7 @@
         Pause = 0x13,
         CapsLock = 0x14,
         Escape = 0x1B,
-        Spacebar = 0x20,
+        Space = 0x20,
         PageUp = 0x21,
         PageDown = 0x22,
         End = 0x23,
@@ -98,16 +98,16 @@
         RightWindows = 0x5C,
         Applications = 0x5D,
         Sleep = 0x5F,
-        NumPad0 = 0x60,
-        NumPad1 = 0x61,
-        NumPad2 = 0x62,
-        NumPad3 = 0x63,
-        NumPad4 = 0x64,
-        NumPad5 = 0x65,
-        NumPad6 = 0x66,
-        NumPad7 = 0x67,
-        NumPad8 = 0x68,
-        NumPad9 = 0x69,
+        Num0 = 0x60,
+        Num1 = 0x61,
+        Num2 = 0x62,
+        Num3 = 0x63,
+        Num4 = 0x64,
+        Num5 = 0x65,
+        Num6 = 0x66,
+        Num7 = 0x67,
+        Num8 = 0x68,
+        Num9 = 0x69,
         NumMultiply = 0x6A,
         NumAdd = 0x6B,
         Separator = 0x6C,
@@ -138,7 +138,7 @@
         F22 = 0x85,
         F23 = 0x86,
         F24 = 0x87,
-        NumberLock = 0x90,
+        NumLock = 0x90,
         ScrollLock = 0x91,
         LeftShift = 0xA0,
         RightShift = 0xA1,
@@ -164,17 +164,50 @@
         LaunchMediaSelect = 0xB5,
         LaunchApp1 = 0xB6,
         LaunchApp2 = 0xB7,
-        OemColon = 0xBA,
-        OemPlus = 0xBB,
-        OemComma = 0xBC,
-        OemMinus = 0xBD,
-        OemPeriod = 0xBE,
-        OemSlash = 0xBF,
-        OemTilde = 0xC0,
-        OemOpenBracket = 0xDB, 
-        OemBackSlash = 0xDC,
-        OemClosingBracket = 0xDD,
-        Oem7 = 0xDE,
+        /// <summary>
+        /// The ": ;" key
+        /// </summary>
+        Colon = 0xBA,
+        /// <summary>
+        /// The "+ =" key
+        /// </summary>
+        Plus = 0xBB,
+        /// <summary>
+        /// The ", <" key
+        /// </summary>
+        Comma = 0xBC,
+        /// <summary>
+        /// The "- _" key
+        /// </summary>
+        Minus = 0xBD,
+        /// <summary>
+        /// The ". >" key
+        /// </summary>
+        Period = 0xBE,
+        /// <summary>
+        /// The "/ ?" key 
+        /// </summary>
+        Slash = 0xBF,
+        /// <summary>
+        /// The "` ~" key
+        /// </summary>
+        Tilde = 0xC0,
+        /// <summary>
+        /// The "[ {" key
+        /// </summary>
+        OpenBracket = 0xDB, 
+        /// <summary>
+        /// The "\ |" key
+        /// </summary>
+        BackSlash = 0xDC,
+        /// <summary>
+        /// The "] }" key
+        /// </summary>
+        ClosingBracket = 0xDD,
+        /// <summary>
+        /// The ' " key
+        /// </summary>
+        Quote = 0xDE,
         Oem8 = 0xDF,  
         Oem102 = 0xE2,
         Process = 0xE5,
