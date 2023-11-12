@@ -36,20 +36,21 @@ namespace GlobalKeyInterceptor
 
         private void OnKeyPressed(object sender, NativeKeyHookedEventArgs e)
         {
-            if (e.KeyState != KeyState.KeyDown && e.KeyState != KeyState.SysKeyDown)
-                return;
-
+            KeyState state = e.KeyState.ToKeyState();
             Key pressedKey = (Key)e.KeyData.VirtualCode;
             Shortcut shortcut = null;
 
             // If a modifier specified as a key, then we ignore it as a modifier
-            bool ctrlModifierPressed = !KeyUtil.IsKeyCtrl(pressedKey) && KeyUtil.IsCtrlPressed();
-            bool shiftModifierPressed = !KeyUtil.IsKeyShift(pressedKey) && KeyUtil.IsShiftPressed();
-            bool altModifierPressed = !KeyUtil.IsKeyAlt(pressedKey) && KeyUtil.IsAltPressed();
-            bool winModifierPressed = !KeyUtil.IsKeyWin(pressedKey) && KeyUtil.IsWinPressed();
+            bool ctrlModifierPressed = !pressedKey.IsCtrl() && KeyExtensions.IsCtrlPressed();
+            bool shiftModifierPressed = !pressedKey.IsShift() && KeyExtensions.IsShiftPressed();
+            bool altModifierPressed = !pressedKey.IsAlt() && KeyExtensions.IsAltPressed();
+            bool winModifierPressed = !pressedKey.IsWin() && KeyExtensions.IsWinPressed();
 
             if (!_interceptingShortcuts.Any())
             {
+                if (state == KeyState.Down)
+                    return;
+
                 KeyModifier ctrlModifier = ctrlModifierPressed ? KeyModifier.Ctrl : KeyModifier.None;
                 KeyModifier shiftModifier = shiftModifierPressed ? KeyModifier.Shift : KeyModifier.None;
                 KeyModifier altModifier = altModifierPressed ? KeyModifier.Alt : KeyModifier.None;
@@ -64,14 +65,17 @@ namespace GlobalKeyInterceptor
                     if ((sc.Key == Key.Ctrl && (pressedKey == Key.LeftCtrl || pressedKey == Key.RightCtrl)) ||
                         (sc.Key == Key.Shift && (pressedKey == Key.LeftShift || pressedKey == Key.RightShift)) ||
                         (sc.Key == Key.Alt && (pressedKey == Key.LeftAlt || pressedKey == Key.RightAlt)) ||
-                        sc.Key == pressedKey)
+                        sc.Key == pressedKey && 
+                        sc.State == state)
                     {
                         bool isCtrlHooking = sc.Modifier.HasFlag(KeyModifier.Ctrl);
                         bool isShiftHooking = sc.Modifier.HasFlag(KeyModifier.Shift);
                         bool isAltHooking = sc.Modifier.HasFlag(KeyModifier.Alt);
                         bool isWinHooking = sc.Modifier.HasFlag(KeyModifier.Win);
 
-                        if (isCtrlHooking == ctrlModifierPressed && isShiftHooking == shiftModifierPressed && isAltHooking == altModifierPressed &&
+                        if (isCtrlHooking == ctrlModifierPressed && 
+                            isShiftHooking == shiftModifierPressed && 
+                            isAltHooking == altModifierPressed && 
                             isWinHooking == winModifierPressed)
                         {
                             shortcut = sc;

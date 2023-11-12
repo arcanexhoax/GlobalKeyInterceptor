@@ -53,14 +53,14 @@ namespace GlobalKeyInterceptor.Native
             bool fEatKeyStroke = false;
             var wparamTyped = wParam.ToInt32();
 
-            if (System.Enum.IsDefined(typeof(KeyState), wparamTyped))
+            if (System.Enum.IsDefined(typeof(NativeKeyState), wparamTyped))
             {
                 object marshaledStruct = Marshal.PtrToStructure(lParam, typeof(LowLevelKeyboardInputEvent));
 
                 if (marshaledStruct != null)
                 {
                     LowLevelKeyboardInputEvent p = (LowLevelKeyboardInputEvent)marshaledStruct;
-                    var eventArguments = new NativeKeyHookedEventArgs(p, (KeyState)wparamTyped);
+                    var eventArguments = new NativeKeyHookedEventArgs(p, (NativeKeyState)wparamTyped);
 
                     KeyPressed?.Invoke(this, eventArguments);
                     fEatKeyStroke = eventArguments.Handled;

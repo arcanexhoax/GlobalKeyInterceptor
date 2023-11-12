@@ -1,16 +1,17 @@
-﻿using GlobalKeyInterceptor.Native;
+﻿using GlobalKeyInterceptor.Enum;
+using GlobalKeyInterceptor.Native;
 
 namespace GlobalKeyInterceptor.Util
 {
-    internal class KeyUtil
+    internal static class KeyExtensions
     {
-        public static bool IsKeyCtrl(Key key) => key == Key.Ctrl || key == Key.LeftCtrl || key == Key.RightCtrl;
+        public static bool IsCtrl(this Key key) => key == Key.Ctrl || key == Key.LeftCtrl || key == Key.RightCtrl;
 
-        public static bool IsKeyShift(Key key) => key == Key.Shift || key == Key.LeftShift || key == Key.RightShift;
+        public static bool IsShift(this Key key) => key == Key.Shift || key == Key.LeftShift || key == Key.RightShift;
 
-        public static bool IsKeyAlt(Key key) => key == Key.Alt || key == Key.LeftAlt || key == Key.RightAlt;
+        public static bool IsAlt(this Key key) => key == Key.Alt || key == Key.LeftAlt || key == Key.RightAlt;
 
-        public static bool IsKeyWin(Key key) => key == Key.LeftWindows || key == Key.RightWindows;
+        public static bool IsWin(this Key key) => key == Key.LeftWindows || key == Key.RightWindows;
 
         public static bool IsCtrlPressed() => NativeMethods.GetAsyncKeyState(NativeKeyInterceptor.VkLeftCtrl) > 1 ||
                 NativeMethods.GetAsyncKeyState(NativeKeyInterceptor.VkRightCtrl) > 1;
@@ -23,5 +24,8 @@ namespace GlobalKeyInterceptor.Util
 
         public static bool IsWinPressed() => NativeMethods.GetAsyncKeyState(NativeKeyInterceptor.VkLeftWin) > 1 ||
                 NativeMethods.GetAsyncKeyState(NativeKeyInterceptor.VkRightWin) > 1;
+
+        public static KeyState ToKeyState(this NativeKeyState nativeKeyState) =>
+            nativeKeyState == NativeKeyState.KeyDown || nativeKeyState == NativeKeyState.SysKeyDown ? KeyState.Down : KeyState.Up;
     }
 }
