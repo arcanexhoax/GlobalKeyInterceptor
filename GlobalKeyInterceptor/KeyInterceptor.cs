@@ -41,10 +41,10 @@ namespace GlobalKeyInterceptor
             Shortcut shortcut = null;
 
             // If a modifier specified as a key, then we ignore it as a modifier
-            bool ctrlModifierPressed = !pressedKey.IsCtrl() && KeyExtensions.IsCtrlPressed();
-            bool shiftModifierPressed = !pressedKey.IsShift() && KeyExtensions.IsShiftPressed();
-            bool altModifierPressed = !pressedKey.IsAlt() && KeyExtensions.IsAltPressed();
-            bool winModifierPressed = !pressedKey.IsWin() && KeyExtensions.IsWinPressed();
+            bool ctrlModifierPressed = !pressedKey.IsCtrl() && KeyUtils.IsCtrlPressed();
+            bool shiftModifierPressed = !pressedKey.IsShift() && KeyUtils.IsShiftPressed();
+            bool altModifierPressed = !pressedKey.IsAlt() && KeyUtils.IsAltPressed();
+            bool winModifierPressed = !pressedKey.IsWin() && KeyUtils.IsWinPressed();
 
             if (!_interceptingShortcuts.Any())
             {

@@ -2,7 +2,7 @@
 {
     public enum KeyState
     {
-        Down,
-        Up
+        Down = 0x100,
+        Up = 0x101
     }
 }
