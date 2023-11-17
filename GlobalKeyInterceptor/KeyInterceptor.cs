@@ -1,7 +1,6 @@
-﻿using GlobalKeyInterceptor.Enum;
-using GlobalKeyInterceptor.Model;
+﻿using GlobalKeyInterceptor.Model;
 using GlobalKeyInterceptor.Native;
-using GlobalKeyInterceptor.Util;
+using GlobalKeyInterceptor.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;

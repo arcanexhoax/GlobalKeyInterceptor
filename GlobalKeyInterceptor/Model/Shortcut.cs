@@ -1,5 +1,4 @@
-﻿using GlobalKeyInterceptor.Enum;
-using GlobalKeyInterceptor.Util;
+﻿using GlobalKeyInterceptor.Utils;
 using System.Text;
 
 namespace GlobalKeyInterceptor

@@ -1,4 +1,4 @@
-﻿namespace GlobalKeyInterceptor.Enum
+﻿namespace GlobalKeyInterceptor
 {
     public enum KeyState
     {
