@@ -3,6 +3,7 @@ using GlobalKeyInterceptor.Native;
 using GlobalKeyInterceptor.Utils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace GlobalKeyInterceptor
@@ -38,6 +39,8 @@ namespace GlobalKeyInterceptor
             KeyState state = e.KeyState.ToKeyState();
             Key pressedKey = (Key)e.KeyData.VirtualCode;
             Shortcut shortcut = null;
+
+            Debug.WriteLine($"Key {pressedKey}. State: {state}");
 
             // If a modifier specified as a key, then we ignore it as a modifier
             bool ctrlModifierPressed = !pressedKey.IsCtrl() && KeyUtils.IsCtrlPressed();

@@ -53,7 +53,7 @@ namespace GlobalKeyInterceptor.Native
             bool fEatKeyStroke = false;
             var wparamTyped = wParam.ToInt32();
 
-            if (System.Enum.IsDefined(typeof(NativeKeyState), wparamTyped))
+            if (Enum.IsDefined(typeof(NativeKeyState), wparamTyped))
             {
                 object marshaledStruct = Marshal.PtrToStructure(lParam, typeof(LowLevelKeyboardInputEvent));
 
