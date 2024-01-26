@@ -1,4 +1,9 @@
 ## GlobalKeyInterceptor
+![NET](https://img.shields.io/badge/.NET-Standard%202.0-%23512BD4)
+[![Version](https://img.shields.io/nuget/vpre/GlobalKeyInterceptor.svg?label=NuGet)](https://www.nuget.org/packages/GlobalKeyInterceptor)
+[![Downloads](https://img.shields.io/nuget/dt/GlobalKeyInterceptor.svg?label=Downloads)](https://www.nuget.org/packages/GlobalKeyInterceptor/)
+[![License](https://img.shields.io/github/license/arcanexhoax/GlobalKeyInterceptor.svg?color=00b542&label=License)](https://raw.githubusercontent.com/arcanexhoax/GlobalKeyInterceptor/master/LICENSE)
+
 It's a simple to use library that allows you to intercept keystrokes or shortcuts in the system.
 
 ## Features 
