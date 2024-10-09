@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33723.286
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlobalKeyInterceptor", "GlobalKeyInterceptor\GlobalKeyInterceptor.csproj", "{08BBAEB1-0DF0-4219-AB74-BC37DA0AD8BB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlobalKeyInterceptor", "GlobalKeyInterceptor\GlobalKeyInterceptor.csproj", "{08BBAEB1-0DF0-4219-AB74-BC37DA0AD8BB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlobalKeyInterceptor.Example.ConsoleApp", "GlobalKeyInterceptor.Example.ConsoleApp\GlobalKeyInterceptor.Example.ConsoleApp.csproj", "{6D5D639B-CCC8-4E85-910A-D26550477509}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{08BBAEB1-0DF0-4219-AB74-BC37DA0AD8BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{08BBAEB1-0DF0-4219-AB74-BC37DA0AD8BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{08BBAEB1-0DF0-4219-AB74-BC37DA0AD8BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D5D639B-CCC8-4E85-910A-D26550477509}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D5D639B-CCC8-4E85-910A-D26550477509}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D5D639B-CCC8-4E85-910A-D26550477509}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D5D639B-CCC8-4E85-910A-D26550477509}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -34,6 +34,24 @@ namespace GlobalKeyInterceptor
             _interceptingShortcuts = interceptingShortcuts ?? Enumerable.Empty<Shortcut>();
         }
 
+        /// <summary>
+        /// Run a message loop that allows you to intercept keys in Console applications.
+        /// <br/>WPF/WinForms applications have their own message loop, so there is no need to use this method in such applications.
+        /// </summary>
+        public void RunMessageLoop()
+        {
+            while (true)
+            {
+                var result = NativeMethods.GetMessage(out var msg, IntPtr.Zero, 0, 0);
+
+                if (result > 0)
+                {
+                    NativeMethods.TranslateMessage(ref msg);
+                    NativeMethods.DispatchMessage(ref msg);
+                }
+            }
+        }
+
         private void OnKeyPressed(object sender, NativeKeyHookedEventArgs e)
         {
             KeyState state = e.KeyState.ToKeyState();
