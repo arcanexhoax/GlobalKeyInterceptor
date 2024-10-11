@@ -12,10 +12,13 @@ It's a simple to use library that allows you to intercept keystrokes or shortcut
 - Works on any Windows application platforms (WPF/WinForms/Console)
 
 ## Example
-### Intercept everything
+Add namespace
 ```cs
 using GlobalKeyInterceptor;
+```
 
+### Intercept everything
+```cs
 var interceptor = new KeyInterceptor();
 
 interceptor.ShortcutPressed += (_, e) =>
@@ -31,7 +34,8 @@ Shortcut[] shortcuts =
     // You can specify a key, up to 4 modifiers, key state and a name
     new Shortcut(Key.R, state: KeyState.Down, name: "R (key is down)"),
     new Shortcut(Key.Alt, KeyModifier.Ctrl, name: "Modifier + Modifier as a simple key"),
-    new Shortcut(Key.D, KeyModifier.Ctrl | KeyModifier.Shift | KeyModifier.Alt | KeyModifier.Win, name: "Every modifier + D"),
+    new Shortcut(Key.D, KeyModifier.Ctrl | KeyModifier.Shift | KeyModifier.Alt | KeyModifier.Win, 
+        name: "Every modifier + D"),
 ];
 
 var interceptor = new KeyInterceptor(shortcuts);

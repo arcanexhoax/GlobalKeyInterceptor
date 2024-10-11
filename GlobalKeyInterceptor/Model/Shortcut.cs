@@ -3,6 +3,9 @@ using System.Text;
 
 namespace GlobalKeyInterceptor
 {
+    /// <summary>
+    /// A class that represents an intercepted keystroke/shortcut in the system
+    /// </summary>
     public class Shortcut
     {
         /// <summary>

@@ -8,25 +8,30 @@ using System.Linq;
 
 namespace GlobalKeyInterceptor
 {
+    /// <summary>
+    /// A class that allows you to intercept the specified or every keystroke/shortcut in the system
+    /// </summary>
     public class KeyInterceptor : IDisposable
     {
         private readonly NativeKeyInterceptor _interceptor;
         private readonly IEnumerable<Shortcut> _interceptingShortcuts;
 
+        private bool _disposed;
+
         /// <summary>
-        /// An event that invokes when any of the specified keys was pressed.
+        /// An event that invokes when any of the specified keys/shortcuts was pressed.
         /// </summary>
         public event EventHandler<ShortcutPressedEventArgs> ShortcutPressed;
 
         /// <summary>
-        /// A class that intercept specified keys. To receive intercepted keys, use <see cref="ShortcutPressed"/> event.
+        /// Creates an instance that intercepts all keys/shortcuts. To receive intercepted keys/shortcuts, use <see cref="ShortcutPressed"/> event.
         /// </summary>
         public KeyInterceptor() : this(Enumerable.Empty<Shortcut>()) { }
 
         /// <summary>
-        /// A class that intercept specified keys. To receive intercepted keys, use <see cref="ShortcutPressed"/> event.
+        /// Creates an instance that intercepts specified keys/shortcuts. To receive intercepted keys/shortcuts, use <see cref="ShortcutPressed"/> event.
         /// </summary>
-        /// <param name="interceptingShortcuts">A list of keys that will be intercepted. If parameter is empty, every key will be intercepted.</param>
+        /// <param name="interceptingShortcuts">A list of keys/shortcuts that will be intercepted. If parameter is empty, every key/shortcut will be intercepted.</param>
         public KeyInterceptor(IEnumerable<Shortcut> interceptingShortcuts)
         {
             _interceptor = new NativeKeyInterceptor();
@@ -115,10 +120,11 @@ namespace GlobalKeyInterceptor
 
         public void Dispose()
         {
-            if (_interceptor != null)
+            if (_interceptor != null && !_disposed)
             {
                 _interceptor.KeyPressed -= OnKeyPressed;
                 _interceptor.Dispose();
+                _disposed = true;
             }
         }
 
