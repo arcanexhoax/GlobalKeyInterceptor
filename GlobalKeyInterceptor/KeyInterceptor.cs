@@ -8,30 +8,53 @@ using System.Linq;
 
 namespace GlobalKeyInterceptor
 {
+    /// <summary>
+    /// A class that allows you to intercept the specified or every keystroke/shortcut in the system
+    /// </summary>
     public class KeyInterceptor : IDisposable
     {
         private readonly NativeKeyInterceptor _interceptor;
         private readonly IEnumerable<Shortcut> _interceptingShortcuts;
 
+        private bool _disposed;
+
         /// <summary>
-        /// An event that invokes when any of the specified keys was pressed.
+        /// An event that invokes when any of the specified keys/shortcuts was pressed.
         /// </summary>
         public event EventHandler<ShortcutPressedEventArgs> ShortcutPressed;
 
         /// <summary>
-        /// A class that intercept specified keys. To receive intercepted keys, use <see cref="ShortcutPressed"/> event.
+        /// Creates an instance that intercepts all keys/shortcuts. To receive intercepted keys/shortcuts, use <see cref="ShortcutPressed"/> event.
         /// </summary>
         public KeyInterceptor() : this(Enumerable.Empty<Shortcut>()) { }
 
         /// <summary>
-        /// A class that intercept specified keys. To receive intercepted keys, use <see cref="ShortcutPressed"/> event.
+        /// Creates an instance that intercepts specified keys/shortcuts. To receive intercepted keys/shortcuts, use <see cref="ShortcutPressed"/> event.
         /// </summary>
-        /// <param name="interceptingShortcuts">A list of keys that will be intercepted. If parameter is empty, every key will be intercepted.</param>
+        /// <param name="interceptingShortcuts">A list of keys/shortcuts that will be intercepted. If parameter is empty, every key/shortcut will be intercepted.</param>
         public KeyInterceptor(IEnumerable<Shortcut> interceptingShortcuts)
         {
             _interceptor = new NativeKeyInterceptor();
             _interceptor.KeyPressed += OnKeyPressed;
             _interceptingShortcuts = interceptingShortcuts ?? Enumerable.Empty<Shortcut>();
+        }
+
+        /// <summary>
+        /// Run a message loop that allows you to intercept keys in Console applications.
+        /// <br/>WPF/WinForms applications have their own message loop, so there is no need to use this method in such applications.
+        /// </summary>
+        public void RunMessageLoop()
+        {
+            while (true)
+            {
+                var result = NativeMethods.GetMessage(out var msg, IntPtr.Zero, 0, 0);
+
+                if (result > 0)
+                {
+                    NativeMethods.TranslateMessage(ref msg);
+                    NativeMethods.DispatchMessage(ref msg);
+                }
+            }
         }
 
         private void OnKeyPressed(object sender, NativeKeyHookedEventArgs e)
@@ -50,9 +73,6 @@ namespace GlobalKeyInterceptor
 
             if (!_interceptingShortcuts.Any())
             {
-                if (state == KeyState.Down)
-                    return;
-
                 KeyModifier ctrlModifier = ctrlModifierPressed ? KeyModifier.Ctrl : KeyModifier.None;
                 KeyModifier shiftModifier = shiftModifierPressed ? KeyModifier.Shift : KeyModifier.None;
                 KeyModifier altModifier = altModifierPressed ? KeyModifier.Alt : KeyModifier.None;
@@ -64,10 +84,10 @@ namespace GlobalKeyInterceptor
             {
                 foreach (var sc in _interceptingShortcuts)
                 {
-                    if ((sc.Key == Key.Ctrl && (pressedKey == Key.LeftCtrl || pressedKey == Key.RightCtrl)) ||
-                        (sc.Key == Key.Shift && (pressedKey == Key.LeftShift || pressedKey == Key.RightShift)) ||
-                        (sc.Key == Key.Alt && (pressedKey == Key.LeftAlt || pressedKey == Key.RightAlt)) ||
-                        sc.Key == pressedKey && 
+                    if ((sc.Key == Key.Ctrl && pressedKey.IsCtrl() ||
+                        sc.Key == Key.Shift && pressedKey.IsShift() ||
+                        sc.Key == Key.Alt && pressedKey.IsAlt() ||
+                        sc.Key == pressedKey) && 
                         sc.State == state)
                     {
                         bool isCtrlHooking = sc.Modifier.HasFlag(KeyModifier.Ctrl);
@@ -97,10 +117,11 @@ namespace GlobalKeyInterceptor
 
         public void Dispose()
         {
-            if (_interceptor != null)
+            if (_interceptor != null && !_disposed)
             {
                 _interceptor.KeyPressed -= OnKeyPressed;
                 _interceptor.Dispose();
+                _disposed = true;
             }
         }
 
