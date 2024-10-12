@@ -73,9 +73,6 @@ namespace GlobalKeyInterceptor
 
             if (!_interceptingShortcuts.Any())
             {
-                if (state == KeyState.Down)
-                    return;
-
                 KeyModifier ctrlModifier = ctrlModifierPressed ? KeyModifier.Ctrl : KeyModifier.None;
                 KeyModifier shiftModifier = shiftModifierPressed ? KeyModifier.Shift : KeyModifier.None;
                 KeyModifier altModifier = altModifierPressed ? KeyModifier.Alt : KeyModifier.None;
@@ -87,10 +84,10 @@ namespace GlobalKeyInterceptor
             {
                 foreach (var sc in _interceptingShortcuts)
                 {
-                    if ((sc.Key == Key.Ctrl && (pressedKey == Key.LeftCtrl || pressedKey == Key.RightCtrl)) ||
-                        (sc.Key == Key.Shift && (pressedKey == Key.LeftShift || pressedKey == Key.RightShift)) ||
-                        (sc.Key == Key.Alt && (pressedKey == Key.LeftAlt || pressedKey == Key.RightAlt)) ||
-                        sc.Key == pressedKey && 
+                    if ((sc.Key == Key.Ctrl && pressedKey.IsCtrl() ||
+                        sc.Key == Key.Shift && pressedKey.IsShift() ||
+                        sc.Key == Key.Alt && pressedKey.IsAlt() ||
+                        sc.Key == pressedKey) && 
                         sc.State == state)
                     {
                         bool isCtrlHooking = sc.Modifier.HasFlag(KeyModifier.Ctrl);

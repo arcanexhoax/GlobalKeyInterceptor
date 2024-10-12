@@ -11,6 +11,12 @@ It's a simple to use library that allows you to intercept keystrokes or shortcut
 - Possibility to "eat" pressed key
 - Works on any Windows application platforms (WPF/WinForms/Console)
 
+## Installation
+Add the following string to the *.csproj* file:
+```xml
+<PackageReference Include="GlobalKeyInterceptor" Version="1.2.0" />
+```
+
 ## Example
 Add namespace
 ```cs
