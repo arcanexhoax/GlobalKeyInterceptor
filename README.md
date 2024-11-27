@@ -14,7 +14,7 @@ It's a simple to use library that allows you to intercept keystrokes or shortcut
 ## Installation
 Add the following string to the *.csproj* file:
 ```xml
-<PackageReference Include="GlobalKeyInterceptor" Version="1.2.0" />
+<PackageReference Include="GlobalKeyInterceptor" Version="1.2.1" />
 ```
 
 ## Example
