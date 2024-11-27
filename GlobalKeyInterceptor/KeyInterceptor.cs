@@ -78,7 +78,7 @@ namespace GlobalKeyInterceptor
                 KeyModifier altModifier = altModifierPressed ? KeyModifier.Alt : KeyModifier.None;
                 KeyModifier winModifier = winModifierPressed ? KeyModifier.Win : KeyModifier.None;
 
-                shortcut = new Shortcut(pressedKey, ctrlModifier | shiftModifier | altModifier | winModifier);
+                shortcut = new Shortcut(pressedKey, ctrlModifier | shiftModifier | altModifier | winModifier, state);
             }
             else
             {

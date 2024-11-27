@@ -5,11 +5,11 @@
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Authors>hoax</Authors>
 		<Description>A simple to use library that allows you to intercept keystrokes or shortcuts in the system. You can find an example of the library in the readme or on the repository page.</Description>
-		<Version>1.2.0</Version>
+		<Version>1.2.1</Version>
 		<Product>GlobalKeyInterceptor</Product>
 		<Title>GlobalKeyInterceptor</Title>
 		<PackageTags>hotkey;shortcut;key;keystroke;interception;interceptor;hook;hooker;listen;listener;check;checker</PackageTags>
-		<PackageVersion>1.2.0</PackageVersion>
+		<PackageVersion>1.2.1</PackageVersion>
 		<PackageId>GlobalKeyInterceptor</PackageId>
 		<PackageProjectUrl>https://github.com/arcanexhoax/GlobalKeyInterceptor</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/arcanexhoax/GlobalKeyInterceptor</RepositoryUrl>
