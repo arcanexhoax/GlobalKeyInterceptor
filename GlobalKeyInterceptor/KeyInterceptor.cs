@@ -122,6 +122,8 @@ namespace GlobalKeyInterceptor
                 _interceptor.KeyPressed -= OnKeyPressed;
                 _interceptor.Dispose();
                 _disposed = true;
+
+                ShortcutPressed = null;
             }
         }
 
