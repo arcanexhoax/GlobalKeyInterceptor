@@ -60,7 +60,7 @@ namespace GlobalKeyInterceptor
 
         public override string ToString()
         {
-            StringBuilder modifiersBuilder = new StringBuilder();
+            StringBuilder modifiersBuilder = new();
 
             if (Modifier.HasFlag(KeyModifier.Ctrl))
                 modifiersBuilder.Append("Ctrl + ");
@@ -74,6 +74,42 @@ namespace GlobalKeyInterceptor
             modifiersBuilder.Append(Key.ToString());
 
             return string.IsNullOrEmpty(Name) ? modifiersBuilder.ToString() : $"{Name} ({modifiersBuilder})";
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Shortcut shortcut)
+            {
+                return Key == shortcut.Key &&
+                       Modifier == shortcut.Modifier &&
+                       State == shortcut.State;
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 17;
+                hash = hash * 23 + Key.GetHashCode();
+                hash = hash * 23 + Modifier.GetHashCode();
+                hash = hash * 23 + State.GetHashCode();
+                return hash;
+            }
+        }
+
+        public static bool operator ==(Shortcut left, Shortcut right)
+        {
+            if (left is null)
+                return right is null;
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Shortcut left, Shortcut right)
+        {
+            return !(left == right);
         }
     }
 }

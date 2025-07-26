@@ -14,29 +14,49 @@ namespace GlobalKeyInterceptor
     public class KeyInterceptor : IDisposable
     {
         private readonly NativeKeyInterceptor _interceptor;
-        private readonly IEnumerable<Shortcut> _interceptingShortcuts;
+        private readonly Dictionary<Shortcut, HashSet<Func<bool>>> _shortcuts;
 
         private bool _disposed;
+        // TODO remove after 2.0 release
+        private bool _usedObsoleteConstructor;
 
         /// <summary>
-        /// An event that invokes when any of the specified keys/shortcuts was pressed.
+        /// An event that invokes when any keys/shortcuts was pressed.
         /// </summary>
         public event EventHandler<ShortcutPressedEventArgs> ShortcutPressed;
 
         /// <summary>
-        /// Creates an instance that intercepts all keys/shortcuts. To receive intercepted keys/shortcuts, use <see cref="ShortcutPressed"/> event.
+        /// Creates an interceptor instance. To intercept specific key/shortcuts use <see cref="RegisterShortcut(Shortcut, Func{bool})"/>. 
+        /// To receive all keys/shortcuts, use <see cref="ShortcutPressed"/> event.
         /// </summary>
-        public KeyInterceptor() : this(Enumerable.Empty<Shortcut>()) { }
+        public KeyInterceptor()
+        {
+            _interceptor = new NativeKeyInterceptor();
+            _interceptor.KeyPressed += OnKeyPressed;
+            _shortcuts = [];
+        }
 
         /// <summary>
         /// Creates an instance that intercepts specified keys/shortcuts. To receive intercepted keys/shortcuts, use <see cref="ShortcutPressed"/> event.
         /// </summary>
-        /// <param name="interceptingShortcuts">A list of keys/shortcuts that will be intercepted. If parameter is empty, every key/shortcut will be intercepted.</param>
+        /// <param name="interceptingShortcuts">A list of keys/shortcuts that will be intercepted.</param>
+        [Obsolete("Use empty constructor with RegisterShortcut() method instead. Starting from version 2.0 this constructor will be removed.", false)]
         public KeyInterceptor(IEnumerable<Shortcut> interceptingShortcuts)
         {
+            _usedObsoleteConstructor = true;
             _interceptor = new NativeKeyInterceptor();
             _interceptor.KeyPressed += OnKeyPressed;
-            _interceptingShortcuts = interceptingShortcuts ?? Enumerable.Empty<Shortcut>();
+            _shortcuts = interceptingShortcuts.ToDictionary(
+                s => s,
+                s => new HashSet<Func<bool>>()
+                {
+                    () =>
+                    {
+                        var args = new ShortcutPressedEventArgs(s);
+                        ShortcutPressed?.Invoke(this, args);
+                        return args.IsHandled;
+                    }
+                });
         }
 
         /// <summary>
@@ -57,6 +77,65 @@ namespace GlobalKeyInterceptor
             }
         }
 
+        /// <summary>
+        /// Registers a shortcut to intercept. If the shortcut already registered, the handler will be added to the existing one.
+        /// <param name="shortcut">An intercepting shortcut</param>
+        /// <param name="handler">A callback that will be invoked when the shortcut is pressed. Return true if you want to "eat" the pressed key.</param>"
+        /// </summary>
+        public void RegisterShortcut(Shortcut shortcut, Func<bool> handler)
+        {
+            if (_shortcuts.TryGetValue(shortcut, out var handlers))
+            {
+                handlers.Add(handler);
+            }
+            else
+            {
+                _shortcuts[shortcut] = [handler];
+            }
+        }
+
+        /// <summary>
+        /// Registers a shortcut to intercept. If the shortcut already registered, the handler will be added to the existing one.
+        /// <param name="shortcut">An intercepting shortcut</param>
+        /// <param name="handler">A callback that will be invoked when the shortcut is pressed.</param>
+        /// <param name="handled">If true, the pressed shortcut will be "eaten" and not passed to the system.</param>
+        /// </summary>
+        public void RegisterShortcut(Shortcut shortcut, Action handler, bool handled = false)
+        {
+            RegisterShortcut(shortcut, () =>
+            {
+                handler();
+                return handled;
+            });
+        }
+
+        /// <summary>
+        /// Unregisters a specific shortcut handler.
+        /// <param name="shortcut">The shortcut to unregister.</param>
+        /// <param name="handler">The specific callback that was registered for the shortcut.</param>
+        /// </summary>
+        public void UnregisterShortcut(Shortcut shortcut, Func<bool> handler)
+        {
+            if (_shortcuts.TryGetValue(shortcut, out var handlers))
+            {
+                handlers.Remove(handler);
+
+                if (handlers.Count == 0)
+                    _shortcuts.Remove(shortcut);
+            }
+        }
+
+        /// <summary>
+        /// Unregister all handlers for the specified shortcut.
+        /// <param name="shortcut">The shortcut to unregister with all registered handlers</param>
+        /// </summary>
+        public void UnregisterShortcut(Shortcut shortcut) => _shortcuts.Remove(shortcut);
+
+        /// <summary>
+        /// Unregisters all shortcuts and their handlers.
+        /// </summary>
+        public void UnregisterAllShortcuts() => _shortcuts.Clear();
+
         private void OnKeyPressed(object sender, NativeKeyHookedEventArgs e)
         {
             KeyState state = e.KeyState.ToKeyState();
@@ -71,7 +150,40 @@ namespace GlobalKeyInterceptor
             bool altModifierPressed = !pressedKey.IsAlt() && KeyUtils.IsAltPressed();
             bool winModifierPressed = !pressedKey.IsWin() && KeyUtils.IsWinPressed();
 
-            if (!_interceptingShortcuts.Any())
+            foreach (var scKeyValue in _shortcuts)
+            {
+                var sc = scKeyValue.Key;
+
+                if ((sc.Key == Key.Ctrl && pressedKey.IsCtrl() ||
+                    sc.Key == Key.Shift && pressedKey.IsShift() ||
+                    sc.Key == Key.Alt && pressedKey.IsAlt() ||
+                    sc.Key == pressedKey) &&
+                    sc.State == state)
+                {
+                    bool isCtrlHooking = sc.Modifier.HasFlag(KeyModifier.Ctrl);
+                    bool isShiftHooking = sc.Modifier.HasFlag(KeyModifier.Shift);
+                    bool isAltHooking = sc.Modifier.HasFlag(KeyModifier.Alt);
+                    bool isWinHooking = sc.Modifier.HasFlag(KeyModifier.Win);
+
+                    if (isCtrlHooking == ctrlModifierPressed &&
+                        isShiftHooking == shiftModifierPressed &&
+                        isAltHooking == altModifierPressed &&
+                        isWinHooking == winModifierPressed)
+                    {
+                        shortcut = sc;
+
+                        foreach (var handler in scKeyValue.Value)
+                            e.Handled = handler();
+
+                        break;
+                    }
+                }
+            }
+
+            if (_usedObsoleteConstructor)
+                return;
+
+            if (shortcut == null)
             {
                 KeyModifier ctrlModifier = ctrlModifierPressed ? KeyModifier.Ctrl : KeyModifier.None;
                 KeyModifier shiftModifier = shiftModifierPressed ? KeyModifier.Shift : KeyModifier.None;
@@ -80,39 +192,10 @@ namespace GlobalKeyInterceptor
 
                 shortcut = new Shortcut(pressedKey, ctrlModifier | shiftModifier | altModifier | winModifier, state);
             }
-            else
-            {
-                foreach (var sc in _interceptingShortcuts)
-                {
-                    if ((sc.Key == Key.Ctrl && pressedKey.IsCtrl() ||
-                        sc.Key == Key.Shift && pressedKey.IsShift() ||
-                        sc.Key == Key.Alt && pressedKey.IsAlt() ||
-                        sc.Key == pressedKey) && 
-                        sc.State == state)
-                    {
-                        bool isCtrlHooking = sc.Modifier.HasFlag(KeyModifier.Ctrl);
-                        bool isShiftHooking = sc.Modifier.HasFlag(KeyModifier.Shift);
-                        bool isAltHooking = sc.Modifier.HasFlag(KeyModifier.Alt);
-                        bool isWinHooking = sc.Modifier.HasFlag(KeyModifier.Win);
 
-                        if (isCtrlHooking == ctrlModifierPressed && 
-                            isShiftHooking == shiftModifierPressed && 
-                            isAltHooking == altModifierPressed && 
-                            isWinHooking == winModifierPressed)
-                        {
-                            shortcut = sc;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (shortcut != null)
-            {
-                var keyHookedEventArgs = new ShortcutPressedEventArgs(shortcut);
-                ShortcutPressed?.Invoke(this, keyHookedEventArgs);
-                e.Handled = keyHookedEventArgs.IsHandled;
-            }
+            var keyHookedEventArgs = new ShortcutPressedEventArgs(shortcut);
+            ShortcutPressed?.Invoke(this, keyHookedEventArgs);
+            e.Handled = keyHookedEventArgs.IsHandled;
         }
 
         public void Dispose()
