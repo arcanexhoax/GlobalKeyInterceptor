@@ -32,9 +32,8 @@ jobs:
       id: pack
       run: | 
         dotnet pack ${{ env.PROJECT_NAME }} -c Release --no-build --output ./${{ env.OUTPUT_DIR }}
-        PACKAGE_PATH=$(find ./${{ env.OUTPUT_DIR }} -name '*.nupkg' | head -n 1)
-        PACKAGE_NAME=$(basename "$PACKAGE_PATH")
-        echo "package_name=$PACKAGE_NAME" >> $GITHUB_OUTPUT
+        $packageName = Get-ChildItem -Path ".\${{ env.OUTPUT_DIR }}" -Filter *.nupkg -Recurse | Select-Object -First 1 | ForEach-Object { $_.Name }
+        echo "package_name=$packageName" >> $env:GITHUB_OUTPUT
 
     - name: Archive
       # if: github.ref_type == 'tag'
