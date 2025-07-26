@@ -54,11 +54,12 @@ jobs:
         name: ${{ env.PROJECT_NAME }}
         path: ./${{ env.OUTPUT_DIR }}
 
-    - name: Push to NuGet
-      run: dotnet nuget push ./${{ env.OUTPUT_DIR }}/${{ needs.build.outputs.package_name }} --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+    # - name: Push to NuGet
+    #   run: dotnet nuget push ./${{ env.OUTPUT_DIR }}/${{ needs.build.outputs.package_name }} --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
 
     - name: Create release
       uses: ncipollo/release-action@v1
       with:
         artifacts: ./${{ env.OUTPUT_DIR }}/${{ needs.build.outputs.package_name }}
         generateReleaseNotes: true
+        tag: ${{ github.ref }}
