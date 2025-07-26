@@ -63,4 +63,4 @@ jobs:
         artifacts: ./${{ env.OUTPUT_DIR }}/${{ needs.build.outputs.package_name }}
         generateReleaseNotes: true
         tag: ${{ github.ref }}
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.GH_USER_TOKEN }}
