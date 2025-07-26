@@ -13,6 +13,8 @@ env:
 jobs:
   build:
     runs-on: windows-latest
+    outputs:
+      package_name: ${{ steps.pack.outputs.package_name }}
 
     steps:
     - name: Checkout
@@ -27,19 +29,24 @@ jobs:
       run: dotnet build ${{ env.PROJECT_NAME }} -c Release
 
     - name: Pack
-      run: dotnet pack ${{ env.PROJECT_NAME }} -c Release --no-build --output ./${{ env.OUTPUT_DIR }}
+      id: pack
+      run: | 
+        dotnet pack ${{ env.PROJECT_NAME }} -c Release --no-build --output ./${{ env.OUTPUT_DIR }}
+        PACKAGE_PATH=$(find ./${{ env.OUTPUT_DIR }} -name '*.nupkg' | head -n 1)
+        PACKAGE_NAME=$(basename "$PACKAGE_PATH")
+        echo "package_name=$PACKAGE_NAME" >> $GITHUB_OUTPUT
 
     - name: Archive
-      if: github.ref_type == 'tag'
+      # if: github.ref_type == 'tag'
       uses: actions/upload-artifact@v4
       with:
         name: ${{ env.PROJECT_NAME }}
-        path: ./${{ env.OUTPUT_DIR }}/*.nupkg
+        path: ./${{ env.OUTPUT_DIR }}/${{ steps.pack.outputs.package_name }}
 
   publish:
     needs: build
     runs-on: windows-latest
-    if: github.ref_type == 'tag'
+    # if: github.ref_type == 'tag'
 
     steps:
     - name: Download artifact
@@ -49,10 +56,10 @@ jobs:
         path: ./${{ env.OUTPUT_DIR }}
 
     - name: Push to NuGet
-      run: dotnet nuget push ./${{ env.OUTPUT_DIR }}/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+      run: dotnet nuget push ./${{ env.OUTPUT_DIR }}/${{ needs.build.outputs.package_name }} --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
 
     - name: Create release
       uses: ncipollo/release-action@v1
       with:
-        artifacts: ./${{ env.OUTPUT_DIR }}/*.nupkg
+        artifacts: ./${{ env.OUTPUT_DIR }}/${{ needs.build.outputs.package_name }}
         generateReleaseNotes: true
