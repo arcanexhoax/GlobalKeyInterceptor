@@ -13,6 +13,8 @@ env:
 jobs:
   build:
     runs-on: windows-latest
+    outputs:
+      package_name: ${{ steps.pack.outputs.package_name }}
 
     steps:
     - name: Checkout
@@ -27,14 +29,18 @@ jobs:
       run: dotnet build ${{ env.PROJECT_NAME }} -c Release
 
     - name: Pack
-      run: dotnet pack ${{ env.PROJECT_NAME }} -c Release --no-build --output ./${{ env.OUTPUT_DIR }}
+      id: pack
+      run: | 
+        dotnet pack ${{ env.PROJECT_NAME }} -c Release --no-build --output ./${{ env.OUTPUT_DIR }}
+        $packageName = Get-ChildItem -Path ".\${{ env.OUTPUT_DIR }}" -Filter *.nupkg -Recurse | Select-Object -First 1 | ForEach-Object { $_.Name }
+        echo "package_name=$packageName" >> $env:GITHUB_OUTPUT
 
-    - name: Archive
+    - name: Upload artifact
       if: github.ref_type == 'tag'
       uses: actions/upload-artifact@v4
       with:
         name: ${{ env.PROJECT_NAME }}
-        path: ./${{ env.OUTPUT_DIR }}/*.nupkg
+        path: ./${{ env.OUTPUT_DIR }}/${{ steps.pack.outputs.package_name }}
 
   publish:
     needs: build
@@ -49,10 +55,11 @@ jobs:
         path: ./${{ env.OUTPUT_DIR }}
 
     - name: Push to NuGet
-      run: dotnet nuget push ./${{ env.OUTPUT_DIR }}/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+      run: dotnet nuget push ./${{ env.OUTPUT_DIR }}/${{ needs.build.outputs.package_name }} --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
 
     - name: Create release
       uses: ncipollo/release-action@v1
       with:
-        artifacts: ./${{ env.OUTPUT_DIR }}/*.nupkg
+        artifacts: ./${{ env.OUTPUT_DIR }}/${{ needs.build.outputs.package_name }}
         generateReleaseNotes: true
+        token: ${{ secrets.GH_USER_TOKEN }}
