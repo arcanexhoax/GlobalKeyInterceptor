@@ -1,17 +1,10 @@
 ﻿using GlobalKeyInterceptor.Enums;
 using System.ComponentModel;
 
-namespace GlobalKeyInterceptor.Models
-{
-    internal class NativeKeyHookedEventArgs : HandledEventArgs
-    {
-        public NativeKeyState KeyState { get; private set; }
-        public LowLevelKeyboardInputEvent KeyData { get; private set; }
+namespace GlobalKeyInterceptor.Models;
 
-        public NativeKeyHookedEventArgs(LowLevelKeyboardInputEvent keyData, NativeKeyState keyState)
-        {
-            KeyData = keyData;
-            KeyState = keyState;
-        }
-    }
+internal class NativeKeyHookedEventArgs(LowLevelKeyboardInputEvent keyData, NativeKeyState keyState) : HandledEventArgs
+{
+    public NativeKeyState KeyState { get; private set; } = keyState;
+    public LowLevelKeyboardInputEvent KeyData { get; private set; } = keyData;
 }

@@ -1,83 +1,103 @@
 ﻿using GlobalKeyInterceptor.Enums;
 
-namespace GlobalKeyInterceptor.Utils
+namespace GlobalKeyInterceptor.Utils;
+
+public static class KeyExtensions
 {
-    public static class KeyExtensions
+    extension(Key key)
     {
         /// <summary>
         /// Check if the specified key is Ctrl (<see cref="Key.Ctrl"/> or <see cref="Key.LeftCtrl"/> of <see cref="Key.RightCtrl"/>).
         /// </summary>
-        public static bool IsCtrl(this Key key) => key == Key.Ctrl || key == Key.LeftCtrl || key == Key.RightCtrl;
+        public bool IsCtrl => key is Key.Ctrl or Key.LeftCtrl or Key.RightCtrl;
 
         /// <summary>
         /// Check if the specified key is Shift (<see cref="Key.Shift"/> or <see cref="Key.LeftShift"/> of <see cref="Key.RightShift"/>).
         /// </summary>
-        public static bool IsShift(this Key key) => key == Key.Shift || key == Key.LeftShift || key == Key.RightShift;
+        public bool IsShift => key is Key.Shift or Key.LeftShift or Key.RightShift;
 
         /// <summary>
         /// Check if the specified key is Alt (<see cref="Key.Alt"/> or <see cref="Key.LeftAlt"/> of <see cref="Key.RightAlt"/>).
         /// </summary>
-        public static bool IsAlt(this Key key) => key == Key.Alt || key == Key.LeftAlt || key == Key.RightAlt;
+        public bool IsAlt => key is Key.Alt or Key.LeftAlt or Key.RightAlt;
 
         /// <summary>
         /// Check if the specified key is Windows (<see cref="Key.LeftWindows"/> or <see cref="Key.RightWindows"/>).
         /// </summary>
-        public static bool IsWin(this Key key) => key == Key.LeftWindows || key == Key.RightWindows;
+        public bool IsWin => key is Key.LeftWindows or Key.RightWindows;
 
         /// <summary>
         /// Check if the specified key is a modifier key (Ctrl, Shift, Alt, or Windows).
         /// </summary>
-        public static bool IsModifier(this Key key) => key.IsCtrl() || key.IsShift() || key.IsAlt() || key.IsWin();
+        public bool IsModifier => key.IsCtrl || key.IsShift || key.IsAlt || key.IsWin;
 
         /// <summary>
         /// Check if the specified key is a digit (0-9).
         /// </summary>
-        public static bool IsDigit(this Key key) => key >= Key.D0 && key <= Key.D9;
+        public bool IsDigit => key is >= Key.D0 and <= Key.D9;
 
         /// <summary>
         /// Check if the specified key is a function key (F1-F24).
         /// </summary>
-        public static bool IsFunctionKey(this Key key) => key >= Key.F1 && key <= Key.F24;
+        public bool IsFunctionKey => key is >= Key.F1 and <= Key.F24;
 
         /// <summary>
         /// Check if the specified key is a numpad digit (Num0-Num9).
         /// </summary>
-        public static bool IsNumpadDigit(this Key key) => key >= Key.Num0 && key <= Key.Num9;
+        public bool IsNumpadDigit => key is >= Key.Num0 and <= Key.Num9;
 
         /// <summary>
         /// Check if the specified key is a numpad key (Num0-Num9, NumDecimal, NumMultiply, NumAdd, NumSubtract, NumDivide, NumEnter).
         /// </summary>
-        public static bool IsNumpadKey(this Key key) => key.IsNumpadDigit() ||
-            key == Key.NumDecimal || key == Key.NumMultiply || key == Key.NumAdd ||
-            key == Key.NumSubtract || key == Key.NumDivide;
+        public bool IsNumpadKey => key.IsNumpadDigit ||
+            key is Key.NumDecimal or Key.NumMultiply or Key.NumAdd or Key.NumSubtract or Key.NumDivide;
 
         /// <summary>
         /// Check if the specified key is an arrow key (UpArrow, DownArrow, LeftArrow, RightArrow).
         /// </summary>
-        public static bool IsArrowKey(this Key key) => key == Key.UpArrow || key == Key.DownArrow || key == Key.LeftArrow || key == Key.RightArrow;
+        public bool IsArrowKey => key is Key.UpArrow or Key.DownArrow or Key.LeftArrow or Key.RightArrow;
 
         /// <summary>
         /// Check if the specified key is a navigation key (Home, End, Insert, Delete, PageUp, PageDown).
         /// </summary>
-        public static bool IsNavigationKey(this Key key) => key == Key.Home || key == Key.End || 
-            key == Key.Insert || key == Key.Delete || key == Key.PageUp || key == Key.PageDown;
+        public bool IsNavigationKey => key is Key.Home or Key.End or Key.Insert or Key.Delete or Key.PageUp or Key.PageDown;
 
         /// <summary>
         /// Check if the specified key is a letter (A-Z).
         /// </summary>
-        public static bool IsLetter(this Key key) => key >= Key.A && key <= Key.Z;
+        public bool IsLetter => key is >= Key.A and <= Key.Z;
 
         /// <summary>
         /// Check if the specified key is a character key (letters, digits, numpad keys, and some punctuation).
         /// </summary>
-        public static bool IsCharacterKey(this Key key) =>
-            key.IsLetter() || key.IsDigit() || key.IsNumpadKey() || 
-            key == Key.Space || key == Key.Minus || key == Key.Plus ||
-            key == Key.Period || key == Key.Comma || key == Key.Colon ||
-            key == Key.Slash || key == Key.Tilde || key == Key.OpenBracket ||
-            key == Key.BackSlash || key == Key.ClosingBracket || key == Key.Quote;
-
-        internal static KeyState ToKeyState(this NativeKeyState nativeKeyState) =>
-            nativeKeyState == NativeKeyState.KeyDown || nativeKeyState == NativeKeyState.SysKeyDown ? KeyState.Down : KeyState.Up;
+        public bool IsCharacterKey => key.IsLetter || key.IsDigit || key.IsNumpadKey
+            || key is Key.Space or Key.Minus or Key.Plus or Key.Period or Key.Comma or Key.Colon
+            or Key.Slash or Key.Tilde or Key.OpenBracket or Key.BackSlash or Key.ClosingBracket or Key.Quote;
     }
+
+    extension (KeyModifier modifier)
+    {
+        /// <summary>
+        /// Check if the specified modifier contains Ctrl.
+        /// </summary>
+        public bool HasCtrl => modifier.HasFlag(KeyModifier.Ctrl);
+
+        /// <summary>
+        /// Check if the specified modifier contains Shift.
+        /// </summary>
+        public bool HasShift => modifier.HasFlag(KeyModifier.Shift);
+
+        /// <summary>
+        /// Check if the specified modifier contains Alt.
+        /// </summary>
+        public bool HasAlt => modifier.HasFlag(KeyModifier.Alt);
+
+        /// <summary>
+        /// Check if the specified modifier contains Windows.
+        /// </summary>
+        public bool HasWin => modifier.HasFlag(KeyModifier.Win);
+    }
+
+    internal static KeyState ToKeyState(this NativeKeyState nativeKeyState) =>
+        nativeKeyState is NativeKeyState.KeyDown or NativeKeyState.SysKeyDown ? KeyState.Down : KeyState.Up;
 }

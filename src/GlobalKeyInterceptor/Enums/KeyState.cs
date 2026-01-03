@@ -1,8 +1,7 @@
-﻿namespace GlobalKeyInterceptor
+﻿namespace GlobalKeyInterceptor;
+
+public enum KeyState
 {
-    public enum KeyState
-    {
-        Down = 0x100,
-        Up = 0x101
-    }
+    Down = 0x100,
+    Up = 0x101
 }

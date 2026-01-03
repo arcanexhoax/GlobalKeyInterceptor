@@ -1,14 +1,13 @@
 ﻿using System;
 
-namespace GlobalKeyInterceptor
+namespace GlobalKeyInterceptor;
+
+[Flags]
+public enum KeyModifier
 {
-    [Flags]
-    public enum KeyModifier
-    {
-        None = 0,
-        Ctrl = 1,
-        Alt = 2,
-        Shift = 4,
-        Win = 8
-    }
+    None = 0,
+    Ctrl = 1,
+    Alt = 2,
+    Shift = 4,
+    Win = 8
 }

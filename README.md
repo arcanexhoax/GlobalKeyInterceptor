@@ -29,7 +29,7 @@ var interceptor = new KeyInterceptor();
 
 interceptor.ShortcutPressed += (_, e) =>
 {
-    Console.WriteLine(e.Shortcut);
+    Console.WriteLine($"{e.Shortcut} {e.Shortcut.State}");
 };
 ```
 
