@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<LangVersion>13</LangVersion>
+		<LangVersion>14</LangVersion>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Authors>hoax</Authors>
 		<Description>A simple to use library that allows you to intercept keystrokes or shortcuts in the system. You can find an example of the library in the readme or on the repository page.</Description>
@@ -15,10 +15,8 @@
 		<PackageProjectUrl>https://github.com/arcanexhoax/GlobalKeyInterceptor</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/arcanexhoax/GlobalKeyInterceptor</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<Copyright>Copyright (c) hoax 2023-2025</Copyright>
-		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<Copyright>Copyright (c) hoax 2023-2026</Copyright>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageReleaseNotes>
 			Added:
 			• ⚠️ Added RegisterShortcut() method instead of using the constructor KeyInterceptor(shortcuts). This constructor is now deprecated and will be removed in version 2.0.0.
@@ -27,14 +25,16 @@
 			Fixed:
 			• Fixed a bug where shortcuts couldn't be intercepted on some systems (only simple keystrokes worked)
 		</PackageReleaseNotes>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Include="..\LICENSE">
+	  <None Include="..\..\LICENSE">
 	    <Pack>True</Pack>
 	    <PackagePath>\</PackagePath>
 	  </None>
-	  <None Include="..\README.md">
+	  <None Include="..\..\README.md">
 	    <Pack>True</Pack>
 	    <PackagePath>\</PackagePath>
 	  </None>

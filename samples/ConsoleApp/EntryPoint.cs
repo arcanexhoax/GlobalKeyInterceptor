@@ -1,4 +1,6 @@
-﻿namespace GlobalKeyInterceptor.Example.ConsoleApp
+﻿using GlobalKeyInterceptor;
+
+namespace ConsoleApp
 {
     internal class EntryPoint
     {

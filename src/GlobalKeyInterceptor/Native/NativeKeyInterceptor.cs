@@ -1,5 +1,5 @@
 ﻿using GlobalKeyInterceptor.Enums;
-using GlobalKeyInterceptor.Model;
+using GlobalKeyInterceptor.Models;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;

@@ -7,7 +7,8 @@ on:
 
 env:
   PROJECT_NAME: GlobalKeyInterceptor
-  DOTNET_VERSION: 8.0.x
+  PROJECT_DIR: src/GlobalKeyInterceptor
+  DOTNET_VERSION: 10.0.x
   OUTPUT_DIR: nupkgs
 
 jobs:
@@ -26,12 +27,12 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Build
-      run: dotnet build ${{ env.PROJECT_NAME }} -c Release
+      run: dotnet build ${{ env.PROJECT_DIR }} -c Release
 
     - name: Pack
       id: pack
       run: | 
-        dotnet pack ${{ env.PROJECT_NAME }} -c Release --no-build --output ./${{ env.OUTPUT_DIR }}
+        dotnet pack ${{ env.PROJECT_DIR }} -c Release --no-build --output ./${{ env.OUTPUT_DIR }}
         $packageName = Get-ChildItem -Path ".\${{ env.OUTPUT_DIR }}" -Filter *.nupkg -Recurse | Select-Object -First 1 | ForEach-Object { $_.Name }
         echo "package_name=$packageName" >> $env:GITHUB_OUTPUT
 

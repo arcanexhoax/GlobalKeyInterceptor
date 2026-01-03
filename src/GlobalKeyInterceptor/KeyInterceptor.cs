@@ -1,4 +1,4 @@
-﻿using GlobalKeyInterceptor.Model;
+﻿using GlobalKeyInterceptor.Models;
 using GlobalKeyInterceptor.Native;
 using GlobalKeyInterceptor.Utils;
 using System;
