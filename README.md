@@ -14,7 +14,7 @@ It's a simple to use library that allows you to intercept keystrokes or shortcut
 ## Installation
 Add the following string to the *.csproj* file:
 ```xml
-<PackageReference Include="GlobalKeyInterceptor" Version="1.3.0" />
+<PackageReference Include="GlobalKeyInterceptor" Version="1.3.1" />
 ```
 
 ## Example
@@ -35,9 +35,9 @@ interceptor.ShortcutPressed += (_, e) =>
 
 ### Intercept only specified keystrokes/shortcuts
 ```cs
-s_interceptor.RegisterShortcut(new Shortcut(Key.R, state: KeyState.Down), () => Console.WriteLine("R is down"));
-s_interceptor.RegisterShortcut(new Shortcut(Key.Alt, KeyModifier.Ctrl), () => Console.WriteLine("Modifier + Modifier as a simple key"));
-s_interceptor.RegisterShortcut(new Shortcut(Key.D, KeyModifier.Ctrl | KeyModifier.Alt | KeyModifier.Shift | KeyModifier.Win), () =>
+interceptor.RegisterShortcut(new Shortcut(Key.R, state: KeyState.Down), () => Console.WriteLine("R is down"));
+interceptor.RegisterShortcut(new Shortcut(Key.Alt, KeyModifier.Ctrl), () => Console.WriteLine("Modifier + Modifier as a simple key"));
+interceptor.RegisterShortcut(new Shortcut(Key.D, KeyModifier.Ctrl | KeyModifier.Alt | KeyModifier.Shift | KeyModifier.Win), () =>
 {
     Console.WriteLine("Every modifier + D");
 
@@ -52,4 +52,4 @@ To allow the console application to intercept keystrokes, you need to add a mess
 interceptor.RunMessageLoop();
 ```
 
-Full example you can find [here](https://github.com/arcanexhoax/GlobalKeyInterceptor/blob/main/GlobalKeyInterceptor.Example.ConsoleApp/EntryPoint.cs) 
+Full example you can find [here](https://github.com/arcanexhoax/GlobalKeyInterceptor/blob/main/samples/ConsoleApp/EntryPoint.cs) 

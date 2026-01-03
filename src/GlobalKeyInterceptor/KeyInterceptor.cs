@@ -8,10 +8,57 @@ using System.Linq;
 
 namespace GlobalKeyInterceptor
 {
+    public interface IKeyInterceptor
+    {
+        /// <summary>
+        /// An event that invokes when any keys/shortcuts was pressed.
+        /// </summary>
+        event EventHandler<ShortcutPressedEventArgs> ShortcutPressed;
+
+        /// <summary>
+        /// Run a message loop that allows you to intercept keys in Console applications.
+        /// <br/>WPF/WinForms applications have their own message loop, so there is no need to use this method in such applications.
+        /// </summary>
+        void RunMessageLoop();
+
+        /// <summary>
+        /// Registers a shortcut to intercept. If the shortcut already registered, the handler will be added to the existing one.
+        /// <param name="shortcut">An intercepting shortcut</param>
+        /// <param name="handler">A callback that will be invoked when the shortcut is pressed. Return true if you want to "eat" the pressed key.</param>"
+        /// </summary>
+        void RegisterShortcut(Shortcut shortcut, Func<bool> handler);
+
+        /// <summary>
+        /// Registers a shortcut to intercept. If the shortcut already registered, the handler will be added to the existing one.
+        /// <param name="shortcut">An intercepting shortcut</param>
+        /// <param name="handler">A callback that will be invoked when the shortcut is pressed.</param>
+        /// <param name="handled">If true, the pressed shortcut will be "eaten" and not passed to the system.</param>
+        /// </summary>
+        void RegisterShortcut(Shortcut shortcut, Action handler, bool handled = false);
+
+        /// <summary>
+        /// Unregisters a specific shortcut handler.
+        /// <param name="shortcut">The shortcut to unregister.</param>
+        /// <param name="handler">The specific callback that was registered for the shortcut.</param>
+        /// </summary>
+        void UnregisterShortcut(Shortcut shortcut, Func<bool> handler);
+
+        /// <summary>
+        /// Unregister all handlers for the specified shortcut.
+        /// <param name="shortcut">The shortcut to unregister with all registered handlers</param>
+        /// </summary>
+        void UnregisterShortcut(Shortcut shortcut);
+
+        /// <summary>
+        /// Unregisters all shortcuts and their handlers.
+        /// </summary>
+        void UnregisterAllShortcuts();
+    }
+
     /// <summary>
     /// A class that allows you to intercept the specified or every keystroke/shortcut in the system
     /// </summary>
-    public class KeyInterceptor : IDisposable
+    public class KeyInterceptor : IKeyInterceptor, IDisposable
     {
         private readonly NativeKeyInterceptor _interceptor;
         private readonly Dictionary<Shortcut, HashSet<Func<bool>>> _shortcuts;
@@ -20,9 +67,7 @@ namespace GlobalKeyInterceptor
         // TODO remove after 2.0 release
         private bool _usedObsoleteConstructor;
 
-        /// <summary>
-        /// An event that invokes when any keys/shortcuts was pressed.
-        /// </summary>
+        /// <inheritdoc/>
         public event EventHandler<ShortcutPressedEventArgs> ShortcutPressed;
 
         /// <summary>
@@ -59,10 +104,7 @@ namespace GlobalKeyInterceptor
                 });
         }
 
-        /// <summary>
-        /// Run a message loop that allows you to intercept keys in Console applications.
-        /// <br/>WPF/WinForms applications have their own message loop, so there is no need to use this method in such applications.
-        /// </summary>
+        /// <inheritdoc/>
         public void RunMessageLoop()
         {
             while (true)
@@ -77,11 +119,7 @@ namespace GlobalKeyInterceptor
             }
         }
 
-        /// <summary>
-        /// Registers a shortcut to intercept. If the shortcut already registered, the handler will be added to the existing one.
-        /// <param name="shortcut">An intercepting shortcut</param>
-        /// <param name="handler">A callback that will be invoked when the shortcut is pressed. Return true if you want to "eat" the pressed key.</param>"
-        /// </summary>
+        /// <inheritdoc/>
         public void RegisterShortcut(Shortcut shortcut, Func<bool> handler)
         {
             if (_shortcuts.TryGetValue(shortcut, out var handlers))
@@ -94,12 +132,7 @@ namespace GlobalKeyInterceptor
             }
         }
 
-        /// <summary>
-        /// Registers a shortcut to intercept. If the shortcut already registered, the handler will be added to the existing one.
-        /// <param name="shortcut">An intercepting shortcut</param>
-        /// <param name="handler">A callback that will be invoked when the shortcut is pressed.</param>
-        /// <param name="handled">If true, the pressed shortcut will be "eaten" and not passed to the system.</param>
-        /// </summary>
+        /// <inheritdoc/>
         public void RegisterShortcut(Shortcut shortcut, Action handler, bool handled = false)
         {
             RegisterShortcut(shortcut, () =>
@@ -109,11 +142,7 @@ namespace GlobalKeyInterceptor
             });
         }
 
-        /// <summary>
-        /// Unregisters a specific shortcut handler.
-        /// <param name="shortcut">The shortcut to unregister.</param>
-        /// <param name="handler">The specific callback that was registered for the shortcut.</param>
-        /// </summary>
+        /// <inheritdoc/>
         public void UnregisterShortcut(Shortcut shortcut, Func<bool> handler)
         {
             if (_shortcuts.TryGetValue(shortcut, out var handlers))
@@ -125,15 +154,10 @@ namespace GlobalKeyInterceptor
             }
         }
 
-        /// <summary>
-        /// Unregister all handlers for the specified shortcut.
-        /// <param name="shortcut">The shortcut to unregister with all registered handlers</param>
-        /// </summary>
+        /// <inheritdoc/>
         public void UnregisterShortcut(Shortcut shortcut) => _shortcuts.Remove(shortcut);
 
-        /// <summary>
-        /// Unregisters all shortcuts and their handlers.
-        /// </summary>
+        /// <inheritdoc/>
         public void UnregisterAllShortcuts() => _shortcuts.Clear();
 
         private void OnKeyPressed(object sender, NativeKeyHookedEventArgs e)
