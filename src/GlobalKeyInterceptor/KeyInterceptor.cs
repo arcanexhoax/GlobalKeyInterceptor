@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace GlobalKeyInterceptor;
 
@@ -12,6 +13,15 @@ public interface IKeyInterceptor
 {
     /// <summary>
     /// An event that invokes when any keys/shortcuts was pressed.
+    /// <br/><b>Warning:</b> Using long-running operations in the event handler may cause <see cref="ShortcutPressedEventArgs.IsHandled"/> to not work properly.
+    /// Use another thread or task (<see cref="Task.Run(Action)"/>) to perform long-running operations inside the event handler.
+    /// <code language="csharp">
+    /// private void OnShortcutPressed(object? sender, ShortcutPressedEventArgs e)
+    /// {
+    ///    Task.Run(LongRunningOperation);
+    ///    e.IsHandled = true;
+    /// }
+    /// </code>
     /// </summary>
     event EventHandler<ShortcutPressedEventArgs> ShortcutPressed;
 
@@ -60,7 +70,7 @@ public interface IKeyInterceptor
 /// </summary>
 public class KeyInterceptor : IKeyInterceptor, IDisposable
 {
-    private readonly NativeKeyInterceptor _interceptor;
+    private readonly NativeKeyInterceptor _interceptor = new();
     private readonly Dictionary<Shortcut, HashSet<Func<bool>>> _shortcuts;
     private readonly bool _usedObsoleteConstructor; // TODO remove after 2.0 release
 
@@ -75,7 +85,6 @@ public class KeyInterceptor : IKeyInterceptor, IDisposable
     /// </summary>
     public KeyInterceptor()
     {
-        _interceptor = new NativeKeyInterceptor();
         _interceptor.KeyPressed += OnKeyPressed;
         _shortcuts = [];
     }
@@ -88,7 +97,6 @@ public class KeyInterceptor : IKeyInterceptor, IDisposable
     public KeyInterceptor(IEnumerable<Shortcut> interceptingShortcuts)
     {
         _usedObsoleteConstructor = true;
-        _interceptor = new NativeKeyInterceptor();
         _interceptor.KeyPressed += OnKeyPressed;
         _shortcuts = interceptingShortcuts.ToDictionary(
             s => s,
@@ -196,7 +204,7 @@ public class KeyInterceptor : IKeyInterceptor, IDisposable
                     shortcut = sc;
 
                     foreach (var handler in scKeyValue.Value)
-                        e.Handled = handler();
+                        e.Handled |= handler();
 
                     break;
                 }
@@ -218,18 +226,18 @@ public class KeyInterceptor : IKeyInterceptor, IDisposable
 
         var keyHookedEventArgs = new ShortcutPressedEventArgs(shortcut);
         ShortcutPressed?.Invoke(this, keyHookedEventArgs);
-        e.Handled = keyHookedEventArgs.IsHandled;
+        e.Handled |= keyHookedEventArgs.IsHandled;
     }
 
     public void Dispose()
     {
         if (_interceptor != null && !_disposed)
         {
-            _interceptor.KeyPressed -= OnKeyPressed;
             _interceptor.Dispose();
             _disposed = true;
 
             ShortcutPressed = null;
+            UnregisterAllShortcuts();
         }
     }
 

@@ -105,6 +105,8 @@ internal class NativeKeyInterceptor : IDisposable
     {
         Dispose(true);
         GC.SuppressFinalize(this);
+
+        KeyPressed = null;
     }
 
     ~NativeKeyInterceptor()
