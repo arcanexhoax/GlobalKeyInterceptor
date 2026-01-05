@@ -5,6 +5,10 @@ public enum Key
     Backspace = 0x8,
     Tab = 0x9,
     Clear = 0xC,
+    /// <summary>
+    /// Represents a generic Enter key, regardless of its physical location on the keyboard.
+    /// In matching logic, it typically acts as a wildcard that covers both <see cref="StandardEnter"/> and <see cref="NumEnter"/>.
+    /// </summary>
     Enter = 0xD,
     Shift = 0x10,
     Ctrl = 0x11,
@@ -13,19 +17,59 @@ public enum Key
     CapsLock = 0x14,
     Escape = 0x1B,
     Space = 0x20,
+    /// <summary>
+    /// Represents a generic PageUp key, regardless of its physical location on the keyboard.
+    /// In matching logic, it typically acts as a wildcard that covers both <see cref="StandardPageUp"/> and <see cref="NumPageUp"/>.
+    /// </summary>
     PageUp = 0x21,
+    /// <summary>
+    /// Represents a generic PageDown key, regardless of its physical location on the keyboard.
+    /// In matching logic, it typically acts as a wildcard that covers both <see cref="StandardPageDown"/> and <see cref="NumPageDown"/>.
+    /// </summary>
     PageDown = 0x22,
+    /// <summary>
+    /// Represents a generic End key, regardless of its physical location on the keyboard.
+    /// In matching logic, it typically acts as a wildcard that covers both <see cref="StandardEnd"/> and <see cref="NumEnd"/>.
+    /// </summary>
     End = 0x23,
+    /// <summary>
+    /// Represents a generic Home key, regardless of its physical location on the keyboard.
+    /// In matching logic, it typically acts as a wildcard that covers both <see cref="StandardHome"/> and <see cref="NumHome"/>.
+    /// </summary>
     Home = 0x24,
+    /// <summary>
+    /// Represents a generic Left arrow key, regardless of its physical location on the keyboard.
+    /// In matching logic, it typically acts as a wildcard that covers both <see cref="StandardLeftArrow"/> and <see cref="NumLeftArrow"/>.
+    /// </summary>
     LeftArrow = 0x25,
+    /// <summary>
+    /// Represents a generic Up arrow key, regardless of its physical location on the keyboard.
+    /// In matching logic, it typically acts as a wildcard that covers both <see cref="StandardUpArrow"/> and <see cref="NumUpArrow"/>.
+    /// </summary>
     UpArrow = 0x26,
+    /// <summary>
+    /// Represents a generic Right arrow key, regardless of its physical location on the keyboard.
+    /// In matching logic, it typically acts as a wildcard that covers both <see cref="StandardRightArrow"/> and <see cref="NumRightArrow"/>.
+    /// </summary>
     RightArrow = 0x27,
+    /// <summary>
+    /// Represents a generic Down arrow key, regardless of its physical location on the keyboard.
+    /// In matching logic, it typically acts as a wildcard that covers both <see cref="StandardDownArrow"/> and <see cref="NumDownArrow"/>.
+    /// </summary>
     DownArrow = 0x28,
     Select = 0x29,
     Print = 0x2A,
     Execute = 0x2B,
     PrintScreen = 0x2C,
+    /// <summary>
+    /// Represents a generic Insert key, regardless of its physical location on the keyboard.
+    /// In matching logic, it typically acts as a wildcard that covers both <see cref="StandardInsert"/> and <see cref="NumInsert"/>.
+    /// </summary>
     Insert = 0x2D,
+    /// <summary>
+    /// Represents a generic Delete key, regardless of its physical location on the keyboard.
+    /// In matching logic, it typically acts as a wildcard that covers both <see cref="StandardDelete"/> and <see cref="NumDelete"/>.
+    /// </summary>
     Delete = 0x2E,
     Help = 0x2F,
     /// <summary>
@@ -220,4 +264,71 @@ public enum Key
     Zoom = 0xFB,
     Pa1 = 0xFD,
     OemClear = 0xFE,
+
+    /// <summary> Represents the Enter key located in the standard alphanumeric block. </summary>
+    /// <remarks> This is a custom-defined value and it DOES NOT have virtual code </remarks>
+    StandardEnter = Enter | 0x100,
+    /// <summary> Represents the Enter key located in the numpad block. </summary>
+    /// <remarks> This is a custom-defined value and it DOES NOT have virtual code </remarks>
+    NumEnter = Enter | 0x200,
+    /// <summary> Represents the Delete key located in the standard alphanumeric block. </summary>
+    /// <remarks> This is a custom-defined value and it DOES NOT have virtual code </remarks>
+    StandardDelete = Delete | 0x200,
+    /// <summary> Represents the Delete key located in the numpad block. </summary>
+    /// <remarks> This is a custom-defined value and it DOES NOT have virtual code </remarks>
+    NumDelete = Delete | 0x100,
+    /// <summary> Represents the Insert key located in the standard alphanumeric block. </summary>
+    /// <remarks> This is a custom-defined value and it DOES NOT have virtual code </remarks>
+    StandardInsert = Insert | 0x200,
+    /// <summary> Represents the Insert key located in the numpad block. </summary>
+    /// <remarks> This is a custom-defined value and it DOES NOT have virtual code </remarks>
+    NumInsert = Insert | 0x100,
+    /// <summary> Represents the Home key located in the standard alphanumeric block. </summary>
+    /// <remarks> This is a custom-defined value and it DOES NOT have virtual code </remarks>
+    StandardHome = Home | 0x200,
+    /// <summary> Represents the Home key located in the numpad block. </summary>
+    /// <remarks> This is a custom-defined value and it DOES NOT have virtual code </remarks>
+    NumHome = Home | 0x100,
+    /// <summary> Represents the End key located in the standard alphanumeric block. </summary>
+    /// <remarks> This is a custom-defined value and it DOES NOT have virtual code </remarks>
+    StandardEnd = End | 0x200,
+    /// <summary> Represents the End key located in the numpad block. </summary>
+    /// <remarks> This is a custom-defined value and it DOES NOT have virtual code </remarks>
+    NumEnd = End | 0x100,
+    /// <summary> Represents the PageUp key located in the standard alphanumeric block. </summary>
+    /// <remarks> This is a custom-defined value and it DOES NOT have virtual code </remarks>
+    StandardPageUp = PageUp | 0x200,
+    /// <summary> Represents the PageUp key located in the numpad block. </summary>
+    /// <remarks> This is a custom-defined value and it DOES NOT have virtual code </remarks>
+    NumPageUp = PageUp | 0x100,
+    /// <summary> Represents the PageDown key located in the standard alphanumeric block. </summary>
+    /// <remarks> This is a custom-defined value and it DOES NOT have virtual code </remarks>
+    StandardPageDown = PageDown | 0x200,
+    /// <summary> Represents the PageDown key located in the numpad block. </summary>
+    /// <remarks> This is a custom-defined value and it DOES NOT have virtual code </remarks>
+    NumPageDown = PageDown | 0x100,
+    /// <summary> Represents the Left arrow key located in the standard alphanumeric block. </summary>
+    /// <remarks> This is a custom-defined value and it DOES NOT have virtual code </remarks>
+    StandardLeftArrow = LeftArrow | 0x200,
+    /// <summary> Represents the Left arrow key located in the numpad block. </summary>
+    /// <remarks> This is a custom-defined value and it DOES NOT have virtual code </remarks>
+    NumLeftArrow = LeftArrow | 0x100,
+    /// <summary> Represents the Up arrow key located in the standard alphanumeric block. </summary>
+    /// <remarks> This is a custom-defined value and it DOES NOT have virtual code </remarks>
+    StandardUpArrow = UpArrow | 0x200,
+    /// <summary> Represents the Up arrow key located in the numpad block. </summary>
+    /// <remarks> This is a custom-defined value and it DOES NOT have virtual code </remarks>
+    NumUpArrow = UpArrow | 0x100,
+    /// <summary> Represents the Right arrow key located in the standard alphanumeric block. </summary>
+    /// <remarks> This is a custom-defined value and it DOES NOT have virtual code </remarks>
+    StandardRightArrow = RightArrow | 0x200,
+    /// <summary> Represents the Right arrow key located in the numpad block. </summary>
+    /// <remarks> This is a custom-defined value and it DOES NOT have virtual code </remarks>
+    NumRightArrow = RightArrow | 0x100,
+    /// <summary> Represents the Down arrow key located in the standard alphanumeric block. </summary>
+    /// <remarks> This is a custom-defined value and it DOES NOT have virtual code </remarks>
+    StandardDownArrow = DownArrow | 0x200,
+    /// <summary> Represents the Down arrow key located in the numpad block. </summary>
+    /// <remarks> This is a custom-defined value and it DOES NOT have virtual code </remarks>
+    NumDownArrow = DownArrow | 0x100,
 }

@@ -73,6 +73,12 @@ public static class KeyExtensions
         public bool IsCharacterKey => key.IsLetter || key.IsDigit || key.IsNumpadKey
             || key is Key.Space or Key.Minus or Key.Plus or Key.Period or Key.Comma or Key.Colon
             or Key.Slash or Key.Tilde or Key.OpenBracket or Key.BackSlash or Key.ClosingBracket or Key.Quote;
+
+        /// <summary> 
+        /// Gets the base virtual key code by stripping any custom bit offsets for <b>Standard-</b> and some <b>Num-</b> keys. 
+        /// <br/>For example base key of <see cref="Key.StandardEnter"/> and <see cref="Key.NumEnter"/> is <see cref="Key.Enter"/>
+        /// </summary>
+        public Key BaseKey => (Key)((int)key & 0xFF);
     }
 
     extension (KeyModifier modifier)

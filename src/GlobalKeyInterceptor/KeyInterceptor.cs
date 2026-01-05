@@ -170,7 +170,8 @@ public class KeyInterceptor : IKeyInterceptor, IDisposable
     private void OnKeyPressed(object sender, NativeKeyHookedEventArgs e)
     {
         var state = e.KeyState.ToKeyState();
-        var pressedKey = (Key)e.KeyData.VirtualCode;
+        var baseKey = (Key)e.KeyData.VirtualCode;
+        var pressedKey = GetExtendedKey(baseKey, e.KeyData.Flags);
         Shortcut shortcut = null;
 
         Debug.WriteLine($"Key {pressedKey}. State: {state}");
@@ -185,11 +186,12 @@ public class KeyInterceptor : IKeyInterceptor, IDisposable
         {
             var sc = scKeyValue.Key;
 
-            if ((sc.Key == Key.Ctrl && pressedKey.IsCtrl ||
-                sc.Key == Key.Shift && pressedKey.IsShift ||
-                sc.Key == Key.Alt && pressedKey.IsAlt ||
-                sc.Key == pressedKey) &&
-                sc.State == state)
+            if ((sc.Key == Key.Ctrl && pressedKey.IsCtrl 
+                || sc.Key == Key.Shift && pressedKey.IsShift
+                || sc.Key == Key.Alt && pressedKey.IsAlt
+                || sc.Key == pressedKey.BaseKey
+                || sc.Key == pressedKey)
+                && sc.State == state)
             {
                 bool isCtrlHooking = sc.Modifier.HasCtrl;
                 bool isShiftHooking = sc.Modifier.HasShift;
@@ -227,6 +229,16 @@ public class KeyInterceptor : IKeyInterceptor, IDisposable
         var keyHookedEventArgs = new ShortcutPressedEventArgs(shortcut);
         ShortcutPressed?.Invoke(this, keyHookedEventArgs);
         e.Handled |= keyHookedEventArgs.IsHandled;
+    }
+
+    private Key GetExtendedKey(Key key, int flags)
+    {
+        var vkCode = (int)key.BaseKey;
+        var isExtended = (flags & 0x01) != 0;
+        var offset = isExtended ? 0x200 : 0x100;
+        var customKey = (Key)(vkCode | offset);
+
+        return Enum.IsDefined(typeof(Key), customKey) ? customKey : key;
     }
 
     public void Dispose()
