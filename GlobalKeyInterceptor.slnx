@@ -4,4 +4,5 @@
   </Folder>
   <Project Path="samples/ConsoleApp/ConsoleApp.csproj" />
   <Project Path="src/GlobalKeyInterceptor/GlobalKeyInterceptor.csproj" />
+  <Project Path="tests/GlobalKeyInterceptor.Tests/GlobalKeyInterceptor.Tests.csproj" Id="112473ec-ee68-485a-a634-c7fc4d55c263" />
 </Solution>

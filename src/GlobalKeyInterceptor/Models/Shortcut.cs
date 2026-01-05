@@ -12,7 +12,6 @@ namespace GlobalKeyInterceptor;
 public class Shortcut
 {
     /// <summary> Intercepted key. </summary>
-    /// <remarks> To get VK code of the key use <see cref="int"/> casting. </remarks>
     public Key Key { get; }
 
     /// <summary> A modifier of the intercepted shortcut. </summary>
@@ -88,16 +87,17 @@ public class Shortcut
         {
             if (i + 1 == parts.Length)
             {
-                if (!Key.TryFormattedParse(shortcutStr, out var parsedKey))
+                if (!Key.TryFormattedParse(parts[i], out var parsedKey))
                     return false;
 
                 shortcut = new Shortcut(parsedKey, modifier, state);
                 return true;
             }
 
-            modifier |= KeyModifier.TryFormattedParse(parts[i], out var parsedModifier)
-                ? parsedModifier
-                : KeyModifier.None;
+            if (!KeyModifier.TryFormattedParse(parts[i], out var parsedModifier))
+                return false;
+
+            modifier |= parsedModifier;
         }
 
         return false;
@@ -110,18 +110,18 @@ public class Shortcut
     {
         StringBuilder modifiersBuilder = new();
 
+        if (Modifier.HasWin)
+            modifiersBuilder.Append("Win + ");
         if (Modifier.HasCtrl)
             modifiersBuilder.Append("Ctrl + ");
         if (Modifier.HasShift)
             modifiersBuilder.Append("Shift + ");
         if (Modifier.HasAlt)
             modifiersBuilder.Append("Alt + ");
-        if (Modifier.HasWin)
-            modifiersBuilder.Append("Win + ");
 
         modifiersBuilder.Append(Key.ToFormattedString());
 
-        return string.IsNullOrEmpty(Name) ? modifiersBuilder.ToString() : $"{Name} ({modifiersBuilder})";
+        return modifiersBuilder.ToString();
     }
 
     public override bool Equals(object obj)
