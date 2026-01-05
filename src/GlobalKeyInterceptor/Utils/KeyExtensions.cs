@@ -40,16 +40,18 @@ public static class KeyExtensions
         public bool IsNumpadDigit => key is >= Key.Num0 and <= Key.Num9;
 
         /// <summary>
-        /// Check if the specified key is a numpad key (Num0-Num9, NumDecimal, NumMultiply, NumAdd, NumSubtract, NumDivide, NumEnter).
+        /// Check if the specified key is a numpad key (Num0-Num9, NumDecimal, NumEnter etc).
         /// </summary>
         public bool IsNumpadKey => key.IsNumpadDigit ||
-            key is Key.NumDecimal or Key.NumMultiply or Key.NumAdd or Key.NumSubtract or Key.NumDivide;
+            key is Key.NumLock or Key.NumDecimal or Key.NumMultiply or Key.NumAdd or Key.NumSubtract or Key.NumDivide
+            or Key.NumEnter or Key.NumDelete or Key.NumInsert or Key.NumHome or Key.NumEnd or Key.NumPageDown
+            or Key.NumPageUp or Key.NumLeftArrow or Key.NumUpArrow or Key.NumRightArrow or Key.NumDownArrow;
 
         /// <summary> Check if the specified key is an arrow key (UpArrow, DownArrow, LeftArrow, RightArrow). </summary>
-        public bool IsArrowKey => key is Key.UpArrow or Key.DownArrow or Key.LeftArrow or Key.RightArrow;
+        public bool IsArrowKey => key.BaseKey is >= Key.LeftArrow and <= Key.DownArrow;
 
         /// <summary> Check if the specified key is a navigation key (Home, End, Insert, Delete, PageUp, PageDown). </summary>
-        public bool IsNavigationKey => key is Key.Home or Key.End or Key.Insert or Key.Delete or Key.PageUp or Key.PageDown;
+        public bool IsNavigationKey => key.BaseKey is Key.Home or Key.End or Key.Insert or Key.Delete or Key.PageUp or Key.PageDown;
 
         /// <summary> Check if the specified key is a letter (A-Z). </summary>
         public bool IsLetter => key is >= Key.A and <= Key.Z;
@@ -122,9 +124,6 @@ public static class KeyExtensions
         /// <returns> true if <paramref name="keyStr"/> was converted successfully; otherwise, false. </returns>
         public static bool TryFormattedParse(string keyStr, out Key value)
         {
-            if (Enum.TryParse(keyStr, true, out value))
-                return true;
-
             value = keyStr switch
             {
                 "1" => Key.D1,
@@ -151,7 +150,12 @@ public static class KeyExtensions
                 _ => default
             };  
 
-            return value != default;
+            if (value != default)
+                return true;
+            if (Enum.TryParse(keyStr, true, out value))
+                return true;
+
+            return false;
         }
     }
 
