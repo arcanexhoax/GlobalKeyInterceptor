@@ -10,8 +10,20 @@ public enum Key
     /// In matching logic, it typically acts as a wildcard that covers both <see cref="StandardEnter"/> and <see cref="NumEnter"/>.
     /// </summary>
     Enter = 0xD,
+    /// <summary> 
+    /// Represents a generic Shift key, regardless of whether it is the left or right one.
+    /// In matching logic, it acts as a wildcard that covers both <see cref="LeftShift"/> and <see cref="RightShift"/>.
+    /// </summary>
     Shift = 0x10,
+    /// <summary> 
+    /// Represents a generic Ctrl key, regardless of whether it is the left or right one.
+    /// In matching logic, it acts as a wildcard that covers both <see cref="LeftCtrl"/> and <see cref="RightCtrl"/>.
+    /// </summary>
     Ctrl = 0x11,
+    /// <summary> 
+    /// Represents a generic Alt key, regardless of whether it is the left or right one.
+    /// In matching logic, it acts as a wildcard that covers both <see cref="LeftAlt"/> and <see cref="RightAlt"/>.
+    /// </summary>
     Alt = 0x12,
     Pause = 0x13,
     CapsLock = 0x14,

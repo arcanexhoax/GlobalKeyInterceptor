@@ -63,6 +63,9 @@ public static class KeyExtensions
         /// Gets the base virtual key code by stripping any custom bit offsets for <b>Standard-</b> and some <b>Num-</b> keys. 
         /// <br/>For example base key of <see cref="Key.StandardEnter"/> and <see cref="Key.NumEnter"/> is <see cref="Key.Enter"/>
         /// </summary>
+        /// <remarks> It has no effect on system defined keys like <see cref="Key.Enter"/> including all modifier keys (<see cref="Key.Ctrl"/>, 
+        /// <see cref="Key.LeftAlt"/>, <see cref="Key.RightWindows"/> etc)
+        /// </remarks>
         public Key BaseKey => (Key)((int)key & 0xFF);
 
         /// <summary> Get the formatted string representation of the key. </summary>
@@ -86,6 +89,17 @@ public static class KeyExtensions
                 Key.BackSlash => "\\",
                 Key.ClosingBracket => "]",
                 Key.Quote => "'",
+                Key.StandardEnter => "Enter",
+                Key.StandardDelete => "Delete",
+                Key.StandardInsert => "Insert",
+                Key.StandardHome => "Home",
+                Key.StandardEnd => "End",
+                Key.StandardPageDown => "PageDown",
+                Key.StandardPageUp => "PageUp",
+                Key.StandardLeftArrow => "LeftArrow",
+                Key.StandardUpArrow => "UpArrow",
+                Key.StandardRightArrow => "RightArrow",
+                Key.StandardDownArrow => "DownArrow",
                 _ => keyStr
             };
         }
@@ -132,8 +146,8 @@ public static class KeyExtensions
                 "`" or "~" => Key.Tilde,
                 "[" or "{" => Key.OpenBracket,
                 "\\" or "|" => Key.BackSlash,
-                "]" or "}"=> Key.ClosingBracket,
-                "'" or "\""=> Key.Quote,
+                "]" or "}" => Key.ClosingBracket,
+                "'" or "\"" => Key.Quote,
                 _ => default
             };  
 
