@@ -88,21 +88,16 @@ public class Shortcut
         {
             if (i + 1 == parts.Length)
             {
-                if (!Enum.TryParse<Key>(parts[i], true, out var parsedKey))
+                if (!Key.TryFormattedParse(shortcutStr, out var parsedKey))
                     return false;
 
                 shortcut = new Shortcut(parsedKey, modifier, state);
                 return true;
             }
 
-            modifier |= parts[i].ToLowerInvariant() switch
-            {
-                "ctrl" or "control" => KeyModifier.Ctrl,
-                "shift" => KeyModifier.Shift,
-                "alt" or "menu" => KeyModifier.Alt,
-                "win" or "windows" => KeyModifier.Win,
-                _ => KeyModifier.None
-            };
+            modifier |= KeyModifier.TryFormattedParse(parts[i], out var parsedModifier)
+                ? parsedModifier
+                : KeyModifier.None;
         }
 
         return false;
@@ -124,7 +119,7 @@ public class Shortcut
         if (Modifier.HasWin)
             modifiersBuilder.Append("Win + ");
 
-        modifiersBuilder.Append(Key.ToString());
+        modifiersBuilder.Append(Key.ToFormattedString());
 
         return string.IsNullOrEmpty(Name) ? modifiersBuilder.ToString() : $"{Name} ({modifiersBuilder})";
     }

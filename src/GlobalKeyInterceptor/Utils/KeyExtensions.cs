@@ -1,4 +1,5 @@
 ﻿using GlobalKeyInterceptor.Enums;
+using System;
 
 namespace GlobalKeyInterceptor.Utils;
 
@@ -26,24 +27,16 @@ public static class KeyExtensions
         /// </summary>
         public bool IsWin => key is Key.LeftWindows or Key.RightWindows;
 
-        /// <summary>
-        /// Check if the specified key is a modifier key (Ctrl, Shift, Alt, or Windows).
-        /// </summary>
+        /// <summary> Check if the specified key is a modifier key (Ctrl, Shift, Alt, or Windows). </summary>
         public bool IsModifier => key.IsCtrl || key.IsShift || key.IsAlt || key.IsWin;
 
-        /// <summary>
-        /// Check if the specified key is a digit (0-9).
-        /// </summary>
+        /// <summary> Check if the specified key is a digit (0-9). </summary>
         public bool IsDigit => key is >= Key.D0 and <= Key.D9;
 
-        /// <summary>
-        /// Check if the specified key is a function key (F1-F24).
-        /// </summary>
+        /// <summary> Check if the specified key is a function key (F1-F24). </summary>
         public bool IsFunctionKey => key is >= Key.F1 and <= Key.F24;
 
-        /// <summary>
-        /// Check if the specified key is a numpad digit (Num0-Num9).
-        /// </summary>
+        /// <summary> Check if the specified key is a numpad digit (Num0-Num9). </summary>
         public bool IsNumpadDigit => key is >= Key.Num0 and <= Key.Num9;
 
         /// <summary>
@@ -52,24 +45,16 @@ public static class KeyExtensions
         public bool IsNumpadKey => key.IsNumpadDigit ||
             key is Key.NumDecimal or Key.NumMultiply or Key.NumAdd or Key.NumSubtract or Key.NumDivide;
 
-        /// <summary>
-        /// Check if the specified key is an arrow key (UpArrow, DownArrow, LeftArrow, RightArrow).
-        /// </summary>
+        /// <summary> Check if the specified key is an arrow key (UpArrow, DownArrow, LeftArrow, RightArrow). </summary>
         public bool IsArrowKey => key is Key.UpArrow or Key.DownArrow or Key.LeftArrow or Key.RightArrow;
 
-        /// <summary>
-        /// Check if the specified key is a navigation key (Home, End, Insert, Delete, PageUp, PageDown).
-        /// </summary>
+        /// <summary> Check if the specified key is a navigation key (Home, End, Insert, Delete, PageUp, PageDown). </summary>
         public bool IsNavigationKey => key is Key.Home or Key.End or Key.Insert or Key.Delete or Key.PageUp or Key.PageDown;
 
-        /// <summary>
-        /// Check if the specified key is a letter (A-Z).
-        /// </summary>
+        /// <summary> Check if the specified key is a letter (A-Z). </summary>
         public bool IsLetter => key is >= Key.A and <= Key.Z;
 
-        /// <summary>
-        /// Check if the specified key is a character key (letters, digits, numpad keys, and some punctuation).
-        /// </summary>
+        /// <summary> Check if the specified key is a character key (letters, digits, numpad keys, and some punctuation). </summary>
         public bool IsCharacterKey => key.IsLetter || key.IsDigit || key.IsNumpadKey
             || key is Key.Space or Key.Minus or Key.Plus or Key.Period or Key.Comma or Key.Colon
             or Key.Slash or Key.Tilde or Key.OpenBracket or Key.BackSlash or Key.ClosingBracket or Key.Quote;
@@ -79,29 +64,81 @@ public static class KeyExtensions
         /// <br/>For example base key of <see cref="Key.StandardEnter"/> and <see cref="Key.NumEnter"/> is <see cref="Key.Enter"/>
         /// </summary>
         public Key BaseKey => (Key)((int)key & 0xFF);
-    }
 
-    extension (KeyModifier modifier)
-    {
-        /// <summary>
-        /// Check if the specified modifier contains Ctrl.
-        /// </summary>
-        public bool HasCtrl => modifier.HasFlag(KeyModifier.Ctrl);
+        /// <summary> Get the formatted string representation of the key. </summary>
+        public string ToFormattedString()
+        {
+            var keyStr = key.ToString();
 
-        /// <summary>
-        /// Check if the specified modifier contains Shift.
-        /// </summary>
-        public bool HasShift => modifier.HasFlag(KeyModifier.Shift);
+            if (key.IsDigit)
+                return keyStr.Substring(1); // D0 -> 0
 
-        /// <summary>
-        /// Check if the specified modifier contains Alt.
-        /// </summary>
-        public bool HasAlt => modifier.HasFlag(KeyModifier.Alt);
+            return key switch
+            {
+                Key.Colon => ";",
+                Key.Plus => "=",
+                Key.Comma => ",",
+                Key.Minus => "-",
+                Key.Period => ".",
+                Key.Slash => "/",
+                Key.Tilde => "`",
+                Key.OpenBracket => "[",
+                Key.BackSlash => "\\",
+                Key.ClosingBracket => "]",
+                Key.Quote => "'",
+                _ => keyStr
+            };
+        }
 
-        /// <summary>
-        /// Check if the specified modifier contains Windows.
-        /// </summary>
-        public bool HasWin => modifier.HasFlag(KeyModifier.Win);
+        /// <summary> Converts the string representation of a key to the <see cref="Key"/> value. </summary>
+        /// <param name="keyStr">A string representation of a key</param>
+        /// <returns> The result value of the conversion </returns>
+        /// <exception cref="ArgumentException"/>
+        public static Key FormattedParse(string keyStr)
+        {
+            if (!TryFormattedParse(keyStr, out var value))
+                throw new ArgumentException($"Failed to parse {keyStr}");
+
+            return value;
+        }
+
+        /// <summary> Try to convert the string representation of a key to the <see cref="Key"/> value. </summary>
+        /// <param name="keyStr"> A string representation of the key. </param>
+        /// <param name="value"> The result value of the conversion. </param>
+        /// <returns> true if <paramref name="keyStr"/> was converted successfully; otherwise, false. </returns>
+        public static bool TryFormattedParse(string keyStr, out Key value)
+        {
+            if (Enum.TryParse(keyStr, true, out value))
+                return true;
+
+            value = keyStr switch
+            {
+                "1" => Key.D1,
+                "2" => Key.D2,
+                "3" => Key.D3,
+                "4" => Key.D4,
+                "5" => Key.D5,
+                "6" => Key.D6,
+                "7" => Key.D7,
+                "8" => Key.D8,
+                "9" => Key.D9,
+                "0" => Key.D0,
+                ";" or ":" => Key.Colon,
+                "=" or "+" => Key.Plus,
+                "," or "<" => Key.Comma,
+                "-" or "_" => Key.Minus,
+                "." or ">" => Key.Period,
+                "/" or "?" => Key.Slash,
+                "`" or "~" => Key.Tilde,
+                "[" or "{" => Key.OpenBracket,
+                "\\" or "|" => Key.BackSlash,
+                "]" or "}"=> Key.ClosingBracket,
+                "'" or "\""=> Key.Quote,
+                _ => default
+            };  
+
+            return value != default;
+        }
     }
 
     internal static KeyState ToKeyState(this NativeKeyState nativeKeyState) =>
