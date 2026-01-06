@@ -1,6 +1,6 @@
 ﻿using GlobalKeyInterceptor.Utils;
 
-namespace GlobalKeyInterceptor.Tests;
+namespace GlobalKeyInterceptor.Tests.Utils;
 
 public class KeyExtensionsTests
 {

@@ -1,4 +1,5 @@
 ﻿using GlobalKeyInterceptor.Enums;
+using GlobalKeyInterceptor.Native;
 using System.ComponentModel;
 
 namespace GlobalKeyInterceptor.Models;

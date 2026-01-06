@@ -36,7 +36,7 @@ public static class KeyModifierExtensions
         /// <returns> true if <paramref name="modifierStr"/> was converted successfully; otherwise, false. </returns>
         public static bool TryFormattedParse(string modifierStr, out KeyModifier value)
         {
-            if (Enum.TryParse(modifierStr, true, out value))
+            if (Enum.TryParse(modifierStr, true, out value) && value != KeyModifier.None)
                 return true;
 
             value = modifierStr.ToLowerInvariant() switch

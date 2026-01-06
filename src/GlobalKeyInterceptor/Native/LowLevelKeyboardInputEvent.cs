@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace GlobalKeyInterceptor.Models;
+namespace GlobalKeyInterceptor.Native;
 
 [StructLayout(LayoutKind.Sequential)]
 internal struct LowLevelKeyboardInputEvent
