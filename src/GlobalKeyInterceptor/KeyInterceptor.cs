@@ -14,7 +14,7 @@ public interface IKeyInterceptor
     /// <summary>
     /// An event that invokes when any keys/shortcuts was pressed.
     /// <br/><b>Warning:</b> Using long-running operations in the event handler may cause <see cref="ShortcutPressedEventArgs.IsHandled"/> to not work properly.
-    /// Use another thread or task (<see cref="Task.Run(Action)"/>) to perform long-running operations inside the event handler.
+    /// Use another thread or task to perform long-running operations inside the event handler.
     /// <code language="csharp">
     /// private void OnShortcutPressed(object? sender, ShortcutPressedEventArgs e)
     /// {
@@ -70,7 +70,8 @@ public interface IKeyInterceptor
 /// </summary>
 public class KeyInterceptor : IKeyInterceptor, IDisposable
 {
-    private readonly NativeKeyInterceptor _interceptor = new();
+    private readonly INativeKeyInterceptor _interceptor;
+    private readonly IKeyUtilsService _keyUtilsService;
     private readonly Dictionary<Shortcut, HashSet<Func<bool>>> _shortcuts;
     private readonly bool _usedObsoleteConstructor; // TODO remove after 2.0 release
 
@@ -79,15 +80,19 @@ public class KeyInterceptor : IKeyInterceptor, IDisposable
     /// <inheritdoc/>
     public event EventHandler<ShortcutPressedEventArgs> ShortcutPressed;
 
+    internal KeyInterceptor(INativeKeyInterceptor nativeKeyInterceptor, IKeyUtilsService keyUtilsService)
+    {
+        _interceptor = nativeKeyInterceptor;
+        _interceptor.KeyPressed += OnKeyPressed;
+        _keyUtilsService = keyUtilsService;
+        _shortcuts = [];
+    }
+
     /// <summary>
     /// Creates an interceptor instance. To intercept specific key/shortcuts use <see cref="RegisterShortcut(Shortcut, Func{bool})"/>. 
     /// To receive all keys/shortcuts, use <see cref="ShortcutPressed"/> event.
     /// </summary>
-    public KeyInterceptor()
-    {
-        _interceptor.KeyPressed += OnKeyPressed;
-        _shortcuts = [];
-    }
+    public KeyInterceptor() : this(new NativeKeyInterceptor(), new KeyUtilsService()) { }
 
     /// <summary>
     /// Creates an instance that intercepts specified keys/shortcuts. To receive intercepted keys/shortcuts, use <see cref="ShortcutPressed"/> event.
@@ -177,10 +182,10 @@ public class KeyInterceptor : IKeyInterceptor, IDisposable
         Debug.WriteLine($"Key {pressedKey}. State: {state}");
 
         // If a modifier specified as a key, then we ignore it as a modifier
-        bool ctrlModifierPressed = !pressedKey.IsCtrl && KeyUtils.IsCtrlPressed;
-        bool shiftModifierPressed = !pressedKey.IsShift && KeyUtils.IsShiftPressed;
-        bool altModifierPressed = !pressedKey.IsAlt && KeyUtils.IsAltPressed;
-        bool winModifierPressed = !pressedKey.IsWin && KeyUtils.IsWinPressed;
+        bool ctrlModifierPressed = !pressedKey.IsCtrl && _keyUtilsService.IsCtrlPressed;
+        bool shiftModifierPressed = !pressedKey.IsShift && _keyUtilsService.IsShiftPressed;
+        bool altModifierPressed = !pressedKey.IsAlt && _keyUtilsService.IsAltPressed;
+        bool winModifierPressed = !pressedKey.IsWin && _keyUtilsService.IsWinPressed;
 
         foreach (var scKeyValue in _shortcuts)
         {

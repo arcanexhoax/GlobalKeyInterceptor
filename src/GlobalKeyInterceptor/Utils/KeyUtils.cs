@@ -29,3 +29,19 @@ public static class KeyUtils
     /// </summary>
     public static bool IsKeyPressed(Key key) => (NativeMethods.GetAsyncKeyState((uint)key) & 0x8000) > 0;
 }
+
+internal interface IKeyUtilsService
+{
+    bool IsCtrlPressed { get; }
+    bool IsShiftPressed { get; }
+    bool IsAltPressed { get; }
+    bool IsWinPressed { get; }
+}
+
+internal class KeyUtilsService : IKeyUtilsService
+{
+    public bool IsCtrlPressed => KeyUtils.IsCtrlPressed;
+    public bool IsShiftPressed => KeyUtils.IsShiftPressed;
+    public bool IsAltPressed => KeyUtils.IsAltPressed;
+    public bool IsWinPressed => KeyUtils.IsWinPressed;
+}

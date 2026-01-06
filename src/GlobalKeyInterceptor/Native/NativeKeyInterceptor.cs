@@ -9,17 +9,14 @@ namespace GlobalKeyInterceptor.Native;
 
 internal delegate IntPtr HookProc(int nCode, IntPtr wParam, IntPtr lParam);
 
-internal class NativeKeyInterceptor : IDisposable
+internal interface INativeKeyInterceptor : IDisposable
+{
+    event EventHandler<NativeKeyHookedEventArgs> KeyPressed;
+}
+
+internal class NativeKeyInterceptor : INativeKeyInterceptor, IDisposable
 {
     public const int WH_KEYBOARD_LL = 13;
-    public const int VkLeftShift = 0xA0;
-    public const int VkRightShift = 0xA1;
-    public const int VkLeftCtrl = 0xA2;
-    public const int VkRightCtrl = 0xA3;
-    public const int VkLeftAlt = 0xA4;
-    public const int VkRightAlt = 0xA5;
-    public const int VkLeftWin = 0x5B;
-    public const int VkRightWin = 0x5C;
 
     private IntPtr _windowsHookHandle;
     private IntPtr _user32LibraryHandle;
@@ -49,7 +46,7 @@ internal class NativeKeyInterceptor : IDisposable
         }
     }
 
-    public IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam)
+    private IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam)
     {
         bool fEatKeyStroke = false;
         var wparamTyped = wParam.ToInt32();
