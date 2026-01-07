@@ -176,16 +176,10 @@ public class KeyInterceptor : IKeyInterceptor, IDisposable
     {
         var state = e.KeyState.ToKeyState();
         var baseKey = (Key)e.KeyData.VirtualCode;
-        var pressedKey = GetExtendedKey(baseKey, e.KeyData.Flags);
-        Shortcut shortcut = null;
+        var pressedKey = GetPressedKey(baseKey, e.KeyData.Flags);
+        var pressedModifier = GetPressedModifiers(pressedKey);
 
         Debug.WriteLine($"Key {pressedKey}. State: {state}");
-
-        // If a modifier specified as a key, then we ignore it as a modifier
-        bool ctrlModifierPressed = !pressedKey.IsCtrl && _keyUtilsService.IsCtrlPressed;
-        bool shiftModifierPressed = !pressedKey.IsShift && _keyUtilsService.IsShiftPressed;
-        bool altModifierPressed = !pressedKey.IsAlt && _keyUtilsService.IsAltPressed;
-        bool winModifierPressed = !pressedKey.IsWin && _keyUtilsService.IsWinPressed;
 
         foreach (var scKeyValue in _shortcuts)
         {
@@ -196,47 +190,25 @@ public class KeyInterceptor : IKeyInterceptor, IDisposable
                 || sc.Key == Key.Alt && pressedKey.IsAlt
                 || sc.Key == pressedKey.BaseKey
                 || sc.Key == pressedKey)
+                && sc.Modifier == pressedModifier
                 && sc.State == state)
             {
-                bool isCtrlHooking = sc.Modifier.HasCtrl;
-                bool isShiftHooking = sc.Modifier.HasShift;
-                bool isAltHooking = sc.Modifier.HasAlt;
-                bool isWinHooking = sc.Modifier.HasWin;
-
-                if (isCtrlHooking == ctrlModifierPressed &&
-                    isShiftHooking == shiftModifierPressed &&
-                    isAltHooking == altModifierPressed &&
-                    isWinHooking == winModifierPressed)
-                {
-                    shortcut = sc;
-
-                    foreach (var handler in scKeyValue.Value)
-                        e.Handled |= handler();
-
-                    break;
-                }
+                foreach (var handler in scKeyValue.Value)
+                    e.Handled |= handler();
             }
         }
 
         if (_usedObsoleteConstructor)
             return;
 
-        if (shortcut == null)
-        {
-            var ctrlModifier = ctrlModifierPressed ? KeyModifier.Ctrl : KeyModifier.None;
-            var shiftModifier = shiftModifierPressed ? KeyModifier.Shift : KeyModifier.None;
-            var altModifier = altModifierPressed ? KeyModifier.Alt : KeyModifier.None;
-            var winModifier = winModifierPressed ? KeyModifier.Win : KeyModifier.None;
-
-            shortcut = new Shortcut(pressedKey, ctrlModifier | shiftModifier | altModifier | winModifier, state);
-        }
-
+        var shortcut = new Shortcut(pressedKey, pressedModifier, state);
         var keyHookedEventArgs = new ShortcutPressedEventArgs(shortcut);
+
         ShortcutPressed?.Invoke(this, keyHookedEventArgs);
         e.Handled |= keyHookedEventArgs.IsHandled;
     }
 
-    private Key GetExtendedKey(Key key, int flags)
+    private Key GetPressedKey(Key key, int flags)
     {
         var vkCode = (int)key.BaseKey;
         var isExtended = (flags & 0x01) != 0;
@@ -244,6 +216,23 @@ public class KeyInterceptor : IKeyInterceptor, IDisposable
         var customKey = (Key)(vkCode | offset);
 
         return Enum.IsDefined(typeof(Key), customKey) ? customKey : key;
+    }
+
+    private KeyModifier GetPressedModifiers(Key pressedKey)
+    {
+        var pressedModifier = KeyModifier.None;
+
+        // If a modifier specified as a key, then we ignore it as a modifier
+        if (!pressedKey.IsCtrl && _keyUtilsService.IsCtrlPressed)
+            pressedModifier |= KeyModifier.Ctrl;
+        if (!pressedKey.IsShift && _keyUtilsService.IsShiftPressed)
+            pressedModifier |= KeyModifier.Shift;
+        if (!pressedKey.IsAlt && _keyUtilsService.IsAltPressed)
+            pressedModifier |= KeyModifier.Alt;
+        if (!pressedKey.IsWin && _keyUtilsService.IsWinPressed)
+            pressedModifier |= KeyModifier.Win;
+
+        return pressedModifier;
     }
 
     public void Dispose()

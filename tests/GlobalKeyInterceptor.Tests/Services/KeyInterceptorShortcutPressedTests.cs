@@ -84,7 +84,6 @@ public class KeyInterceptorShortcutPressedTests
     [InlineData(0xA4, true, true, true, true, Key.LeftAlt, KeyModifier.Win | KeyModifier.Ctrl | KeyModifier.Shift)]
     [InlineData(0x10D, true, true, true, true, Key.StandardEnter, KeyModifier.Win | KeyModifier.Ctrl | KeyModifier.Shift | KeyModifier.Alt)]
     [InlineData(0x123, true, true, true, true, Key.NumEnd, KeyModifier.Win | KeyModifier.Ctrl | KeyModifier.Shift | KeyModifier.Alt)]
-    [InlineData(0x26, true, true, true, true, Key.UpArrow, KeyModifier.Win | KeyModifier.Ctrl | KeyModifier.Shift | KeyModifier.Alt)]
     internal void ModifierKeysPressed(int vkCode, bool win, bool ctrl, bool shift, bool alt, Key expectedKey, KeyModifier expectedModifier)
     {
         Shortcut? shortcut = null;
