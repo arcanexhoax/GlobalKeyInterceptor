@@ -3,7 +3,6 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<LangVersion>14</LangVersion>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Authors>hoax</Authors>
 		<Description>A simple to use library that allows you to intercept keystrokes or shortcuts in the system. You can find an example of the library in the readme or on the repository page.</Description>
 		<Version>1.3.1</Version>
@@ -17,14 +16,6 @@
 		<RepositoryType>git</RepositoryType>
 		<Copyright>Copyright (c) hoax 2023-2026</Copyright>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-		<PackageReleaseNotes>
-			Added:
-			• ⚠️ Added RegisterShortcut() method instead of using the constructor KeyInterceptor(shortcuts). This constructor is now deprecated and will be removed in version 2.0.0.
-			• Added UnregisterShortcut() to unregister a specific shortcut handler or all shortcut handlers.
-			• Added extension methods for Key: IsModifierKey(), IsFunctionKey(), IsNavigationKey(), IsDigit(), IsNumpadDigit(), IsNumpadKey(), IsArrowKey(), IsLetter(), IsCharacterKey()
-			Fixed:
-			• Fixed a bug where shortcuts couldn't be intercepted on some systems (only simple keystrokes worked)
-		</PackageReleaseNotes>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 	</PropertyGroup>

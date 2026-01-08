@@ -144,6 +144,7 @@ public class KeyInterceptor : IKeyInterceptor, IDisposable
         }
     }
 
+    // TODO write unit tests
     /// <inheritdoc/>
     public void RegisterShortcut(Shortcut shortcut, Action handler, bool handled = false)
     {
