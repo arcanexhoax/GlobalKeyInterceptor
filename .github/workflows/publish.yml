@@ -7,8 +7,12 @@ on:
 
 env:
   PROJECT_NAME: GlobalKeyInterceptor
-  DOTNET_VERSION: 8.0.x
+  PROJECT_DIR: src/GlobalKeyInterceptor
+  TESTS_DIR: tests/GlobalKeyInterceptor.Tests
+  DOTNET_VERSION: 10.0.x
   OUTPUT_DIR: nupkgs
+  CHANGELOG_PATH: CHANGELOG.md
+  RELEASE_NOTES_PATH: release_notes.md
 
 jobs:
   build:
@@ -26,12 +30,15 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Build
-      run: dotnet build ${{ env.PROJECT_NAME }} -c Release
+      run: dotnet build -c Release
+
+    - name: Tests
+      run: dotnet test ${{ env.TESTS_DIR }} -c Release --no-build
 
     - name: Pack
       id: pack
       run: | 
-        dotnet pack ${{ env.PROJECT_NAME }} -c Release --no-build --output ./${{ env.OUTPUT_DIR }}
+        dotnet pack ${{ env.PROJECT_DIR }} -c Release --no-build --output ./${{ env.OUTPUT_DIR }}
         $packageName = Get-ChildItem -Path ".\${{ env.OUTPUT_DIR }}" -Filter *.nupkg -Recurse | Select-Object -First 1 | ForEach-Object { $_.Name }
         echo "package_name=$packageName" >> $env:GITHUB_OUTPUT
 
@@ -57,9 +64,23 @@ jobs:
     - name: Push to NuGet
       run: dotnet nuget push ./${{ env.OUTPUT_DIR }}/${{ needs.build.outputs.package_name }} --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
 
+    - name: Generate Release Notes
+      id: extract_notes
+      shell: pwsh
+      run: |
+        $changelog = Get-Content ${{ env.CHANGELOG_PATH }} -Raw
+
+        if ($changelog -match '(?s)(## v[\d\.]+.*?)(?=\n## v|$)') {
+            $notes = $matches[1].Trim()
+            $notes | Out-File -FilePath ${{ env.RELEASE_NOTES_PATH }} -Encoding utf8
+        } else {
+            Write-Error "Could not find a valid version section"
+            exit 1
+        }
+      
     - name: Create release
       uses: ncipollo/release-action@v1
       with:
         artifacts: ./${{ env.OUTPUT_DIR }}/${{ needs.build.outputs.package_name }}
-        generateReleaseNotes: true
+        bodyFile: ${{ env.RELEASE_NOTES_PATH }}
         token: ${{ secrets.GH_USER_TOKEN }}
