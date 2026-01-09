@@ -4,8 +4,6 @@ using GlobalKeyInterceptor.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GlobalKeyInterceptor;
 
@@ -72,8 +70,7 @@ public class KeyInterceptor : IKeyInterceptor, IDisposable
 {
     private readonly INativeKeyInterceptor _interceptor;
     private readonly IKeyUtilsService _keyUtilsService;
-    private readonly Dictionary<Shortcut, HashSet<Func<bool>>> _shortcuts;
-    private readonly bool _usedObsoleteConstructor; // TODO remove after 2.0 release
+    private readonly Dictionary<Shortcut, HashSet<Func<bool>>> _shortcuts = [];
 
     private bool _disposed;
 
@@ -85,7 +82,6 @@ public class KeyInterceptor : IKeyInterceptor, IDisposable
         _interceptor = nativeKeyInterceptor;
         _interceptor.KeyPressed += OnKeyPressed;
         _keyUtilsService = keyUtilsService;
-        _shortcuts = [];
     }
 
     /// <summary>
@@ -93,28 +89,6 @@ public class KeyInterceptor : IKeyInterceptor, IDisposable
     /// To receive all keys/shortcuts, use <see cref="ShortcutPressed"/> event.
     /// </summary>
     public KeyInterceptor() : this(new NativeKeyInterceptor(), new KeyUtilsService()) { }
-
-    /// <summary>
-    /// Creates an instance that intercepts specified keys/shortcuts. To receive intercepted keys/shortcuts, use <see cref="ShortcutPressed"/> event.
-    /// </summary>
-    /// <param name="interceptingShortcuts">A list of keys/shortcuts that will be intercepted.</param>
-    [Obsolete("Use empty constructor with RegisterShortcut() method instead. Starting from version 2.0 this constructor will be removed.", false)]
-    public KeyInterceptor(IEnumerable<Shortcut> interceptingShortcuts)
-    {
-        _usedObsoleteConstructor = true;
-        _interceptor.KeyPressed += OnKeyPressed;
-        _shortcuts = interceptingShortcuts.ToDictionary(
-            s => s,
-            s => new HashSet<Func<bool>>()
-            {
-                () =>
-                {
-                    var args = new ShortcutPressedEventArgs(s);
-                    ShortcutPressed?.Invoke(this, args);
-                    return args.IsHandled;
-                }
-            });
-    }
 
     /// <inheritdoc/>
     public void RunMessageLoop()
@@ -198,9 +172,6 @@ public class KeyInterceptor : IKeyInterceptor, IDisposable
                     e.Handled |= handler();
             }
         }
-
-        if (_usedObsoleteConstructor)
-            return;
 
         var shortcut = new Shortcut(pressedKey, pressedModifier, state);
         var keyHookedEventArgs = new ShortcutPressedEventArgs(shortcut);
