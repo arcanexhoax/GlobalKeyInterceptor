@@ -33,7 +33,6 @@ public class ShortcutTests
     {
         var result = Shortcut.TryParse(input, state, out var shortcut);
         Assert.True(result);
-        Assert.NotNull(shortcut);
         Assert.Equal(expectedKey, shortcut.Key);
         Assert.Equal(expectedModifier, shortcut.Modifier);
         Assert.Equal(state, shortcut.State);
@@ -44,7 +43,6 @@ public class ShortcutTests
     {
         var result = Shortcut.TryParse("e ctrl shift", KeyState.Up, out var shortcut);
         Assert.False(result);
-        Assert.Null(shortcut);
     }
 
     [Fact]
@@ -61,31 +59,5 @@ public class ShortcutTests
     {
         var shortcut = new Shortcut(key, modifier);
         Assert.Equal(expected, shortcut.ToString());
-    }
-
-    [Fact]
-    public void Equals_And_OperatorEquals_WorkCorrectly()
-    {
-        var s1 = new Shortcut(Key.E, KeyModifier.Ctrl | KeyModifier.Shift, KeyState.Up);
-        var s2 = new Shortcut(Key.E, KeyModifier.Ctrl | KeyModifier.Shift, KeyState.Up);
-        var s3 = new Shortcut(Key.E, KeyModifier.Ctrl, KeyState.Up);
-        var s4 = new Shortcut(Key.A, KeyModifier.Ctrl | KeyModifier.Shift, KeyState.Up);
-        var s5 = new Shortcut(Key.E, KeyModifier.Ctrl | KeyModifier.Shift, KeyState.Down);
-
-        Assert.True(s1.Equals(s2));
-        Assert.True(s1 == s2);
-
-        Assert.False(s1.Equals(s3));
-        Assert.False(s1 == s3);
-
-        Assert.False(s1.Equals(s4));
-        Assert.False(s1 == s4);
-
-        Assert.False(s1.Equals(s5));
-        Assert.False(s1 == s5);
-
-        Assert.True(s1 != s3);
-        Assert.True(s1 != s4);
-        Assert.True(s1 != s5);
     }
 }

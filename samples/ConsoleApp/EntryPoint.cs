@@ -33,6 +33,6 @@ internal class EntryPoint
         Console.WriteLine($"{e.Shortcut} {e.Shortcut.State}");
 
         // You can also "eat" the pressed key by setting IsHandled to true
-        e.IsHandled = true;
+        e.IsHandled = false;
     }
 }
