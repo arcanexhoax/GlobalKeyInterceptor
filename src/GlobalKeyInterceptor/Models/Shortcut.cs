@@ -103,10 +103,14 @@ public class Shortcut
         return false;
     }
 
+    public override string ToString() => ToString(Key.ToString);
+
     /// <summary>
     /// Converts the <see cref="Shortcut"/> object to a string in format <b>Ctrl + Shift + E</b>.
     /// </summary>
-    public override string ToString()
+    public string ToFormattedString() => ToString(() => Key.ToFormattedString());
+
+    private string ToString(Func<string> toStringKey)
     {
         StringBuilder modifiersBuilder = new();
 
@@ -119,7 +123,7 @@ public class Shortcut
         if (Modifier.HasAlt)
             modifiersBuilder.Append("Alt + ");
 
-        modifiersBuilder.Append(Key.ToFormattedString());
+        modifiersBuilder.Append(toStringKey());
 
         return modifiersBuilder.ToString();
     }
