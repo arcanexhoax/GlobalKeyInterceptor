@@ -1,3 +1,7 @@
+## v1.3.2
+**Added:**
+- Method `ToFormattedString()` for `Shortcut` class. Method `ToString()` now returns a string representation for technical purposes (like parsing back).
+
 ## v1.3.1
 **Fixed:** 
 - Incorrect `IsHandled` logic when multiple callbacks are registered for a single shortcut.
