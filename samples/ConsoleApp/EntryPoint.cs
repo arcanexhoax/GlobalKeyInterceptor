@@ -30,7 +30,7 @@ internal class EntryPoint
 
     private static void OnShortcutPressed(object? sender, ShortcutPressedEventArgs e)
     {
-        Console.WriteLine($"{e.Shortcut} {e.Shortcut.State}");
+        Console.WriteLine($"{e.Shortcut.ToFormattedString()} {e.Shortcut.State}");
 
         // You can also "eat" the pressed key by setting IsHandled to true
         e.IsHandled = true;
