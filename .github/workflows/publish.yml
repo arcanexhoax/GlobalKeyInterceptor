@@ -9,7 +9,6 @@ env:
   PROJECT_NAME: GlobalKeyInterceptor
   PROJECT_DIR: src/GlobalKeyInterceptor
   TESTS_DIR: tests/GlobalKeyInterceptor.Tests
-  DOTNET_VERSION: 10.0.x
   OUTPUT_DIR: nupkgs
   CHANGELOG_PATH: CHANGELOG.md
   RELEASE_NOTES_PATH: release_notes.md
@@ -23,11 +22,6 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-      
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Build
       run: dotnet build -c Release
@@ -50,20 +44,17 @@ jobs:
 
         if ($changelog -match '(?s)(## v[\d\.]+.*?)(?=\n## v|$)') {
             $notes = $matches[1].Trim()
-            $notes | Out-File -FilePath ${{ env.RELEASE_NOTES_PATH }} -Encoding utf8
+            $notes | Out-File -FilePath ./${{ env.OUTPUT_DIR }}/${{ env.RELEASE_NOTES_PATH }} -Encoding utf8
         } else {
             Write-Error "Could not find a valid version section"
             exit 1
         }
         
     - name: Upload artifact
-      if: github.ref_type == 'tag'
       uses: actions/upload-artifact@v4
       with:
         name: ${{ env.PROJECT_NAME }}
-        path: |
-          ./${{ env.OUTPUT_DIR }}/${{ steps.pack.outputs.package_name }}
-          ./${{ env.RELEASE_NOTES_PATH }}
+        path: ${{ env.OUTPUT_DIR }}
 
   publish:
     needs: build
@@ -75,7 +66,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: ${{ env.PROJECT_NAME }}
-        path: ./${{ env.OUTPUT_DIR }}
+        path: ${{ env.OUTPUT_DIR }}
 
     - name: Push to NuGet
       run: dotnet nuget push ./${{ env.OUTPUT_DIR }}/${{ needs.build.outputs.package_name }} --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
